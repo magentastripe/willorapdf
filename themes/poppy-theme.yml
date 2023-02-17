@@ -86,10 +86,10 @@ header:
     left:
       content: '{page-number}'
     center:
-      content: 'CHARLOTTE KOCH'
+      content: 'AUTHOR NAME'
   recto:
     center:
-      content: 'THE WOLFSKULL STANDARD'
+      content: 'YOUR BOOK TITLE'
     right:
       content: '{page-number}'
 
