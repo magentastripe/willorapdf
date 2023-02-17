@@ -1,0 +1,105 @@
+#
+# WilloraPDF
+# "Poppy" Asciidoctor PDF theme
+#
+# - IngramSpark 5.25"x8" Perfectbound (paperback)
+# - Using my edition of "The Poppy War" as a template
+#
+---
+
+extends: base
+
+font:
+  catalog:
+    merge: false
+    EBGaramond:
+      normal: EBGaramond08-Regular.ttf
+      italic: EBGaramond08-Italic.ttf
+      bold: EBGaramond12-Regular.ttf
+    WaterGothic:
+      normal: WatGoth1.ttf
+      italic: WatGoth1.ttf
+      bold: WatGoth1.ttf
+    Cabin:
+      normal: Cabin-Regular.ttf
+      italic: Cabin-Italic.ttf
+      bold: Cabin-Bold.ttf
+    Tuffy:
+      normal: Tuffy-Regular.ttf
+      italic: Tuffy-Italic.ttf
+      bold: Tuffy-Bold.ttf
+
+running-content:
+  start-at: 4
+
+page:
+  layout: portrait
+  margin: [0.75in, 0.5in, 0.5in, 0.5in]
+  margin-inner: 0.5in
+  size: [5.25in, 8in]
+  numbering:
+    start-at: 4
+
+base:
+  font-color: #000000
+  font-family: EBGaramond
+  font-size: 12pt
+  line-height: 1.25
+
+title-page:
+  text-align: center
+  title:
+    font-family: WaterGothic
+    font-size: 34pt
+  authors:
+    font-size: 16pt
+
+prose:
+  text-indent-inner: 12pt
+  margin-bottom: 0
+  margin-inner: 0
+
+verse:
+  font-family: EBGaramond
+  border-left-width: 0
+
+heading:
+  h1:
+    font-family: Tuffy
+    font-style: normal
+    text-align: center
+    margin-page-top: 2.0in
+  h2:
+    font-family: Tuffy
+    font-style: normal
+    text-align: center
+    margin-page-top: 1.0in
+    margin-bottom: 0.5in
+
+# "Real" Poppy style
+header:
+  font-family: Tuffy
+  font-size: 9pt
+  height: 0.75in
+  line-height: 1.0
+  verso:
+    left:
+      content: '{page-number}'
+    center:
+      content: 'CHARLOTTE KOCH'
+  recto:
+    center:
+      content: 'THE WOLFSKULL STANDARD'
+    right:
+      content: '{page-number}'
+
+# Plain style
+#header:
+#  height: 0.75in
+#  line-height: 1.0
+#  verso:
+#    center:
+#      content: '{page-number}'
+#  recto:
+#    center:
+#      content: '{page-number}'
