@@ -26,7 +26,7 @@ CUSTOM_PDF_CONVERTER=	${WILLORABASE}/lib/willora_pdf_converter.rb
 # https://docs.asciidoctor.org/pdf-converter/latest/optimize-pdf/
 
 ${PDF_OUT}: ${THEMEDIR}/${THEME}-theme.yml ${CUSTOM_PDF_CONVERTER} ${ADOC_TOTAL} Gemfile.lock
-	${BUNDLE} exec sciidoctor-pdf \
+	${BUNDLE} exec asciidoctor-pdf \
 		-v \
 		-r ${CUSTOM_PDF_CONVERTER} \
 		-d book \
