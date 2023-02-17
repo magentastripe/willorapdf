@@ -1,0 +1,63 @@
+#
+# WilloraPDF
+# "Boring" Asciidoctor PDF theme
+#
+# - US Letter paper
+# - Based on the "Standard Manuscript Format"
+#
+---
+
+extends: base
+
+page:
+  layout: portrait
+  margin: [1.0in, 1.0in, 1.0in, 1.0in]
+  size: [8.5in, 11in]
+  numbering:
+    start-at: 4
+
+base:
+  font-color: #000000
+  font-family: Times-Roman
+  font-size: 12pt
+  line-height: 2.0
+
+title-page:
+  text-align: center
+  title:
+    font-family: Times-Roman
+    font-size: 34pt
+  authors:
+    font-size: 16pt
+
+prose:
+  text-indent-inner: 24pt
+  margin-bottom: 0
+  margin-inner: 0
+
+verse:
+  font-family: Times-Roman
+  border-left-width: 0
+
+heading:
+  h1:
+    font-family: Times-Roman
+    font-style: normal
+    text-align: center
+    margin-page-top: 2.0in
+  h2:
+    font-family: Times-Roman
+    font-style: normal
+    text-align: center
+    margin-page-top: 1.0in
+    margin-bottom: 0.5in
+
+header:
+  height: 1.0in
+  line-height: 1.0
+  verso:
+    center:
+      content: '{page-number}'
+  recto:
+    center:
+      content: '{page-number}'
