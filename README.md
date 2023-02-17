@@ -4,7 +4,7 @@
 professional publishing.
 
 It is a collection of themes, tools and other goodies for
-[Asciidoctor-PDF][]. **WilloraPDF is designed to empower self-publishers**
+[Asciidoctor-PDF][1]. **WilloraPDF is designed to empower self-publishers**
 and lower the barrier to entry for authors who want their work
 professionally printed.
 
@@ -23,11 +23,11 @@ that WilloraPDF _can_ be used to publish actual, real-life books.
 
 ## How it works
 
-1. Write your book in the [AsciiDoc][] markup language
+1. Write your book in the [AsciiDoc][2] markup language
 2. Choose a theme, trim size and other settings
 3. Feed your book into WilloraPDF
 4. A good-looking PDF document comes out!
 
 
-[Asciidoctor]: https://asciidoctor.org/
-[Asciidoctor-PDF]: https://docs.asciidoctor.org/pdf-converter/latest/ 
+[1]: https://docs.asciidoctor.org/pdf-converter/latest/ 
+[2]: https://asciidoctor.org/
