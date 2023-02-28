@@ -1,0 +1,13 @@
+---
+
+extends: poppy
+
+page:
+  margin: [2.5in, ~, ~, ~]
+
+base:
+  line-height: 1.0
+  text-align: center
+
+prose: 
+  text-indent-inner: 0
