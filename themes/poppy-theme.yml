@@ -16,14 +16,6 @@ font:
       normal: EBGaramond08-Regular.ttf
       italic: EBGaramond08-Italic.ttf
       bold: EBGaramond12-Regular.ttf
-    WaterGothic:
-      normal: WatGoth1.ttf
-      italic: WatGoth1.ttf
-      bold: WatGoth1.ttf
-    Cabin:
-      normal: Cabin-Regular.ttf
-      italic: Cabin-Italic.ttf
-      bold: Cabin-Bold.ttf
     Tuffy:
       normal: Tuffy-Regular.ttf
       italic: Tuffy-Italic.ttf
@@ -49,7 +41,7 @@ base:
 title-page:
   text-align: center
   title:
-    font-family: WaterGothic
+    font-family: Tuffy
     font-size: 34pt
   authors:
     font-size: 16pt
