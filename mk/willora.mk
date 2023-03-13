@@ -3,7 +3,6 @@
 # Charlotte Koch <dressupgeekout@gmail.com>
 #
 
-# XXX this should be generated w/ a configure-step?
 WILLORABASE?=	${.CURDIR}
 
 NAME?=		mybook
