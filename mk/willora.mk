@@ -17,6 +17,7 @@ MEDIA?=		prepress
 
 COLOPHON_OUT?=		colophon.pdf
 DEDICATION_OUT?=	dedication.pdf
+ACKNOWLEDGMENTS_OUT?=	acknowledgments.pdf
 
 CUSTOM_PDF_CONVERTER=	${WILLORABASE}/lib/willora_pdf_converter.rb
 
@@ -28,7 +29,7 @@ CUSTOM_PDF_CONVERTER=	${WILLORABASE}/lib/willora_pdf_converter.rb
 # https://docs.asciidoctor.org/pdf-converter/latest/optimize-pdf/
 
 CLEANFILES+=	${PDF_OUT}
-${PDF_OUT}: ${THEMEDIR}/${THEME}-theme.yml ${CUSTOM_PDF_CONVERTER} ${ADOC_TOTAL} Gemfile.lock ${COLOPHON_OUT} ${DEDICATION_OUT}
+${PDF_OUT}: ${THEMEDIR}/${THEME}-theme.yml ${CUSTOM_PDF_CONVERTER} ${ADOC_TOTAL} Gemfile.lock ${COLOPHON_OUT} ${DEDICATION_OUT} ${ACKNOWLEDGMENTS_OUT}
 	${BUNDLE} exec asciidoctor-pdf \
 		-v \
 		-r ${CUSTOM_PDF_CONVERTER} \
@@ -78,6 +79,19 @@ ${DEDICATION_OUT}: ${THEMEDIR}/${THEME}-dedication-theme.yml ${DEDICATION_FILE} 
 		-a pdf-themesdir=${THEMEDIR} \
 		-a media=print \
 		${DEDICATION_FILE}
+
+CLEANFILES+=	${ACKNOWLEDGMENTS_OUT}
+${ACKNOWLEDGMENTS_OUT}: ${THEMEDIR}/${THEME}-acknowledgments-theme.yml ${ACKNOWLEDGMENTS_FILE} ${CUSTOM_PDF_CONVERTER} Gemfile.lock
+	${BUNDLE} exec asciidoctor-pdf \
+		-v \
+		-r ${CUSTOM_PDF_CONVERTER} \
+		-d book \
+		-o ${.TARGET} \
+		-a pdf-fontsdir=${FONTDIR} \
+		-a pdf-theme=${THEME}-acknowledgments \
+		-a pdf-themesdir=${THEMEDIR} \
+		-a media=print \
+		${ACKNOWLEDGMENTS_FILE}
 
 Gemfile.lock:
 	${BUNDLE} install
