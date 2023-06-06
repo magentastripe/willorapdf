@@ -29,6 +29,12 @@ CUSTOM_PDF_CONVERTER=	${WILLORABASE}/lib/willora_pdf_converter.rb
 .PHONY: all
 all: ${PDF_OUT} ${EPUB_OUT}
 
+.PHONY: pdf
+pdf: ${PDF_OUT}
+
+.PHONY: epub
+epub: ${EPUB_OUT}
+
 ########## ########## ##########
 
 # XXX: Figure out why I can't do this:
