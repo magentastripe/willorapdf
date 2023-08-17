@@ -31,7 +31,7 @@ EPUB_COLOPHON_OUT?=		colophon-epub.pdf
 DEDICATION_OUT?=	dedication.pdf
 ACKNOWLEDGMENTS_OUT?=	acknowledgments.pdf
 
-CUSTOM_PDF_CONVERTER=	${WILLORABASE}/lib/willora_pdf_converter.rb
+CUSTOM_PDF_CONVERTER=	${WILLORABASE}/lib/${THEME}_pdf_converter.rb
 ERBBER_SCRIPT=		script/erbber.rb
 UNICODE_TABLE=		script/unicodify.sed
 
