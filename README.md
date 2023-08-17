@@ -1,3 +1,5 @@
+![WilloraPDF](./assets/willorapdf.png)
+
 # WilloraPDF
 
 **WilloraPDF** is a free and open source document preparation system for
