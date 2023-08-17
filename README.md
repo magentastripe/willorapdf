@@ -20,6 +20,7 @@ that WilloraPDF _can_ be used to publish actual, real-life books.
 
 - Typesetting for printed text with no (or very few) illustrations
 - Render PDFs for local home printing or actual bookbinding
+- Render EPUBs for reading on Kindle and other e-readers
 - Generate properly formatted manuscripts
 
 
@@ -28,7 +29,7 @@ that WilloraPDF _can_ be used to publish actual, real-life books.
 1. Write your book in the [AsciiDoc][3] markup language
 2. Choose a theme, trim size and other settings
 3. Feed your book into WilloraPDF
-4. A good-looking PDF document comes out!
+4. A good-looking PDF and/or EPUB document comes out!
 
 
 [1]: https://magentastripe.com/
