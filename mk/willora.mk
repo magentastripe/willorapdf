@@ -5,45 +5,59 @@
 
 WILLORABASE?=	${.CURDIR}
 
-NAME?=		mybook
-PDF_OUT?=	${NAME}.pdf
-PDF_ADOC_TOTAL=	${PDF_OUT}.adoc
-EPUB_OUT?=	${NAME}.epub
-EPUB_ADOC_TOTAL=${EPUB_OUT}.adoc
+NAME?=			mybook
+PAPERBACK_OUT?=		${NAME}-paperback.pdf
+HARDCOVER_OUT?=		${NAME}-hardcover.pdf
+EPUB_OUT?=		${NAME}.epub
+PAPERBACK_ADOC_TOTAL=	${PAPERBACK_OUT}.adoc
+HARDCOVER_ADOC_TOTAL=	${HARDCOVER_OUT}.adoc
+EPUB_ADOC_TOTAL=	${EPUB_OUT}.adoc
 
 BUNDLE?=	bundle
+RUBY?=		ruby
 THEME?=		poppy
 THEMEDIR?=	${WILLORABASE}/themes
 FONTDIR?=	${WILLORABASE}/fonts
 MEDIA?=		prepress
 PUBLISHER?=	WilloraPDF
 
-COLOPHON_OUT?=		colophon.pdf
+PAPERBACK_FRONTMATTER=		adoc/frontmatter-paperback.adoc
+HARDCOVER_FRONTMATTER=		adoc/frontmatter-hardcover.adoc
+EPUB_FRONTMATTER=		adoc/frontmatter-epub.adoc
+PAPERBACK_COLOPHON_OUT?=	colophon-paperback.pdf
+HARDCOVER_COLOPHON_OUT?=	colophon-hardcover.pdf
+EPUB_COLOPHON_OUT?=		colophon-epub.pdf
+
 DEDICATION_OUT?=	dedication.pdf
 ACKNOWLEDGMENTS_OUT?=	acknowledgments.pdf
 
 CUSTOM_PDF_CONVERTER=	${WILLORABASE}/lib/willora_pdf_converter.rb
+ERBBER_SCRIPT=		script/erbber.rb
 
 ########## ########## ##########
 
 .PHONY: all
-all: ${PDF_OUT} ${EPUB_OUT}
+all: ${PAPERBACK_OUT} ${HARDCOVER_OUT} ${EPUB_OUT}
 
+# Legacy synonym
 .PHONY: pdf
-pdf: ${PDF_OUT}
+pdf: paperback
+
+.PHONY: paperback
+paperback: ${PAPERBACK_OUT}
+
+.PHONY: hardcover
+hardcover: ${HARDCOVER_OUT}
 
 .PHONY: epub
 epub: ${EPUB_OUT}
 
 ########## ########## ##########
 
-# XXX: Figure out why I can't do this:
-# 'asciidoctor-pdf -a optimize'
-# > GPL Ghostscript 9.50: Can't find initialization file gs_init.ps.
-# https://docs.asciidoctor.org/pdf-converter/latest/optimize-pdf/
+# ===== PAPERBACK =====
 
-CLEANFILES+=	${PDF_OUT}
-${PDF_OUT}: ${THEMEDIR}/${THEME}-theme.yml ${CUSTOM_PDF_CONVERTER} ${PDF_ADOC_TOTAL} Gemfile.lock ${COLOPHON_OUT} ${DEDICATION_OUT} ${ACKNOWLEDGMENTS_OUT}
+CLEANFILES+=	${PAPERBACK_OUT}
+${PAPERBACK_OUT}: ${THEMEDIR}/${THEME}-theme.yml ${CUSTOM_PDF_CONVERTER} ${PAPERBACK_ADOC_TOTAL} Gemfile.lock ${PAPERBACK_COLOPHON_OUT} ${DEDICATION_OUT} ${ACKNOWLEDGMENTS_OUT}
 	${BUNDLE} exec asciidoctor-pdf \
 		-v \
 		-r ${CUSTOM_PDF_CONVERTER} \
@@ -54,21 +68,23 @@ ${PDF_OUT}: ${THEMEDIR}/${THEME}-theme.yml ${CUSTOM_PDF_CONVERTER} ${PDF_ADOC_TO
 		-a pdf-themesdir=${THEMEDIR} \
 		-a media=${MEDIA} \
 		-a text-align=justify \
-		${PDF_ADOC_TOTAL}
+		${PAPERBACK_ADOC_TOTAL}
 
-CLEANFILES+=	${PDF_ADOC_TOTAL}
-${PDF_ADOC_TOTAL}: ${CHAPTERS}
+CLEANFILES+=	${PAPERBACK_ADOC_TOTAL}
+${PAPERBACK_ADOC_TOTAL}: ${PAPERBACK_FRONTMATTER} ${CHAPTERS}
 	rm -f ${.TARGET}
+	cp ${PAPERBACK_FRONTMATTER} ${.TARGET}
 .for chapter in ${CHAPTERS}
+	printf '\n\n' >> ${.TARGET}
 	dos2unix < ${chapter} | sed -E \
 		-e 's,[[:space:]]--[[:space:]],\&\#8212;,g' \
 		-e 's,\&iuml;,\&\#239;,g' \
+		-e 's,\&egrave;,\&\#232;,g' \
 		-e 's,\&eacute;,\&\#233;,g' >> ${.TARGET}
-	printf '\n\n' >> ${.TARGET}
 .endfor
 
-CLEANFILES+=	${COLOPHON_OUT}
-${COLOPHON_OUT}: ${THEMEDIR}/${THEME}-colophon-theme.yml ${COLOPHON_FILE} ${CUSTOM_PDF_CONVERTER} Gemfile.lock
+CLEANFILES+=	${PAPERBACK_COLOPHON_OUT}
+${PAPERBACK_COLOPHON_OUT}: ${THEMEDIR}/${THEME}-colophon-theme.yml ${PAPERBACK_COLOPHON_FILE} ${CUSTOM_PDF_CONVERTER} Gemfile.lock
 	${BUNDLE} exec asciidoctor-pdf \
 		-v \
 		-r ${CUSTOM_PDF_CONVERTER} \
@@ -79,7 +95,97 @@ ${COLOPHON_OUT}: ${THEMEDIR}/${THEME}-colophon-theme.yml ${COLOPHON_FILE} ${CUST
 		-a pdf-themesdir=${THEMEDIR} \
 		-a media=print \
 		-a text-align=justify \
-		${COLOPHON_FILE}
+		${PAPERBACK_COLOPHON_FILE}
+
+CLEANFILES+=	${PAPERBACK_COLOPHON_FILE}
+${PAPERBACK_COLOPHON_FILE}: ${COLOPHON_TEMPLATE} ${ERBBER_SCRIPT}
+	${BUNDLE} exec ${RUBY} ${ERBBER_SCRIPT} -DISBN13=${PAPERBACK_ISBN} --input ${COLOPHON_TEMPLATE} > ${.TARGET}
+
+########## ########## ##########
+
+# ===== HARDCOVER =====
+
+CLEANFILES+=	${HARDCOVER_OUT}
+${HARDCOVER_OUT}: ${THEMEDIR}/${THEME}-theme.yml ${CUSTOM_PDF_CONVERTER} ${HARDCOVER_ADOC_TOTAL} Gemfile.lock ${HARDCOVER_COLOPHON_OUT} ${DEDICATION_OUT} ${ACKNOWLEDGMENTS_OUT}
+	${BUNDLE} exec asciidoctor-pdf \
+		-v \
+		-r ${CUSTOM_PDF_CONVERTER} \
+		-d book \
+		-o ${.TARGET} \
+		-a pdf-fontsdir=${FONTDIR} \
+		-a pdf-theme=${THEME} \
+		-a pdf-themesdir=${THEMEDIR} \
+		-a media=${MEDIA} \
+		-a text-align=justify \
+		${PAPERBACK_ADOC_TOTAL}
+
+CLEANFILES+=	${HARDCOVER_ADOC_TOTAL}
+${HARDCOVER_ADOC_TOTAL}: ${HARDCOVER_FRONTMATTER} ${CHAPTERS}
+	rm -f ${.TARGET}
+	cp ${HARDCOVER_FRONTMATTER} ${.TARGET}
+.for chapter in ${CHAPTERS}
+	printf '\n\n' >> ${.TARGET}
+	dos2unix < ${chapter} | sed -E \
+		-e 's,[[:space:]]--[[:space:]],\&\#8212;,g' \
+		-e 's,\&iuml;,\&\#239;,g' \
+		-e 's,\&eacute;,\&\#233;,g' >> ${.TARGET}
+.endfor
+
+CLEANFILES+=	${HARDCOVER_COLOPHON_OUT}
+${HARDCOVER_COLOPHON_OUT}: ${THEMEDIR}/${THEME}-colophon-theme.yml ${HARDCOVER_COLOPHON_FILE} ${CUSTOM_PDF_CONVERTER} Gemfile.lock
+	${BUNDLE} exec asciidoctor-pdf \
+		-v \
+		-r ${CUSTOM_PDF_CONVERTER} \
+		-d book \
+		-o ${.TARGET} \
+		-a pdf-fontsdir=${FONTDIR} \
+		-a pdf-theme=${THEME}-colophon \
+		-a pdf-themesdir=${THEMEDIR} \
+		-a media=print \
+		-a text-align=justify \
+		${HARDCOVER_COLOPHON_FILE}
+
+CLEANFILES+=	${HARDCOVER_COLOPHON_FILE}
+${HARDCOVER_COLOPHON_FILE}: ${COLOPHON_TEMPLATE} ${ERBBER_SCRIPT}
+	${BUNDLE} exec ${RUBY} ${ERBBER_SCRIPT} -DISBN13=${HARDCOVER_ISBN} --input ${COLOPHON_TEMPLATE} > ${.TARGET}
+
+########## ########## ##########
+
+# ===== EPUB =====
+
+CLEANFILES+=	${EPUB_OUT}
+${EPUB_OUT}: Gemfile.lock ${EPUB_ADOC_TOTAL}
+	${BUNDLE} exec asciidoctor-epub3 \
+		-v \
+		-d book \
+		-o ${.TARGET} \
+		-a producer="${PUBLISHER}" \
+		-a front-cover-image=${EPUB_COVER_FILE} \
+		-a ebook-format=epub3 \
+		-a media=${MEDIA} \
+		-a text-align=justify \
+		${EPUB_ADOC_TOTAL}
+
+CLEANFILES+=	${EPUB_ADOC_TOTAL}
+${EPUB_ADOC_TOTAL}: ${EPUB_FRONTMATTER} ${CHAPTERS}
+	rm -f ${.TARGET}
+	cp ${EPUB_FRONTMATTER} ${.TARGET}
+.for chapter in ${CHAPTERS}
+	printf '\n\n' >> ${.TARGET}
+	dos2unix < ${chapter} | sed -E \
+		-e 's,[[:space:]]--[[:space:]],\&\#8212;,g' \
+		-e 's,\&iuml;,\&\#239;,g' \
+		-e 's,\&eacute;,\&\#233;,g' >> ${.TARGET}
+.endfor
+
+CLEANFILES+=	${EPUB_COLOPHON_FILE}
+${EPUB_COLOPHON_FILE}: ${COLOPHON_TEMPLATE} ${ERBBER_SCRIPT}
+	${BUNDLE} exec ${RUBY} ${ERBBER_SCRIPT} -DISBN13=${EPUB_ISBN} --input ${COLOPHON_TEMPLATE} > ${.TARGET}
+
+
+########## ########## ##########
+
+# ===== COMMON =====
 
 CLEANFILES+=	${DEDICATION_OUT}
 ${DEDICATION_OUT}: ${THEMEDIR}/${THEME}-dedication-theme.yml ${DEDICATION_FILE} ${CUSTOM_PDF_CONVERTER} Gemfile.lock
@@ -109,46 +215,7 @@ ${ACKNOWLEDGMENTS_OUT}: ${THEMEDIR}/${THEME}-acknowledgments-theme.yml ${ACKNOWL
 
 ########## ########## ##########
 
-# XXX: '-a ebook-validate' doesn't work because:
-# > RUBYOPT=-d epubcheck
-# Exception `LoadError' at /usr/pkg/lib/ruby/3.0.0/rubygems.rb:1339 - cannot
-# 	load such file -- rubygems/defaults/ruby
-# Exception `LoadError' at
-# 	<internal:/usr/pkg/lib/ruby/3.0.0/rubygems/core_ext/kernel_require.rb>:85 -
-# 	cannot load such file -- rubygems/defaults/operating_system
-# Exception `LoadError' at
-# 	<internal:/usr/pkg/lib/ruby/3.0.0/rubygems/core_ext/kernel_require.rb>:162 -
-# 	cannot load such file -- rubygems/defaults/operating_system
-# Failed to execute epubcheck
-
-CLEANFILES+=	${EPUB_OUT}
-${EPUB_OUT}: Gemfile.lock ${EPUB_ADOC_TOTAL}
-	${BUNDLE} exec asciidoctor-epub3 \
-		-v \
-		-d book \
-		-o ${.TARGET} \
-		-a producer="${PUBLISHER}" \
-		-a front-cover-image=${EPUB_COVER_FILE} \
-		-a ebook-format=epub3 \
-		-a media=${MEDIA} \
-		-a text-align=justify \
-		${EPUB_ADOC_TOTAL}
-
-# XXX Needs to be different from the PDF one
-CLEANFILES+=	${EPUB_ADOC_TOTAL}
-${EPUB_ADOC_TOTAL}: ${CHAPTERS}
-	rm -f ${.TARGET}
-.for chapter in ${CHAPTERS}
-	dos2unix < ${chapter} | sed -E \
-		-e 's,[[:space:]]--[[:space:]],\&\#8212;,g' \
-		-e 's,\&iuml;,\&\#239;,g' \
-		-e 's,\&eacute;,\&\#233;,g' >> ${.TARGET}
-	printf '\n\n' >> ${.TARGET}
-.endfor
-
-########## ########## ##########
-
-Gemfile.lock:
+Gemfile.lock: Gemfile
 	${BUNDLE} install
 
 ########## ########## ##########
