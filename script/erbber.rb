@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 #
 # WilloraPDF template renderer
-# Charlotte Koch <dressupgeekout@gmail.com>
+# Charlotte Koch <charlotte@magentastripe.com>
 #
 
 require 'erb'

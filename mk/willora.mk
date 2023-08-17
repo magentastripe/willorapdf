@@ -1,6 +1,6 @@
 #
 # willora.mk
-# Charlotte Koch <dressupgeekout@gmail.com>
+# Charlotte Koch <charlotte@magentastripe.com>
 #
 
 WILLORABASE?=	${.CURDIR}
