@@ -33,6 +33,7 @@ ACKNOWLEDGMENTS_OUT?=	acknowledgments.pdf
 
 CUSTOM_PDF_CONVERTER=	${WILLORABASE}/lib/willora_pdf_converter.rb
 ERBBER_SCRIPT=		script/erbber.rb
+UNICODE_TABLE=		script/unicodify.sed
 
 ########## ########## ##########
 
@@ -71,16 +72,12 @@ ${PAPERBACK_OUT}: ${THEMEDIR}/${THEME}-theme.yml ${CUSTOM_PDF_CONVERTER} ${PAPER
 		${PAPERBACK_ADOC_TOTAL}
 
 CLEANFILES+=	${PAPERBACK_ADOC_TOTAL}
-${PAPERBACK_ADOC_TOTAL}: ${PAPERBACK_FRONTMATTER} ${CHAPTERS}
+${PAPERBACK_ADOC_TOTAL}: ${PAPERBACK_FRONTMATTER} ${CHAPTERS} ${UNICODE_TABLE}
 	rm -f ${.TARGET}
 	cp ${PAPERBACK_FRONTMATTER} ${.TARGET}
 .for chapter in ${CHAPTERS}
 	printf '\n\n' >> ${.TARGET}
-	dos2unix < ${chapter} | sed -E \
-		-e 's,[[:space:]]--[[:space:]],\&\#8212;,g' \
-		-e 's,\&iuml;,\&\#239;,g' \
-		-e 's,\&egrave;,\&\#232;,g' \
-		-e 's,\&eacute;,\&\#233;,g' >> ${.TARGET}
+	dos2unix < ${chapter} | sed -E -f ${UNICODE_TABLE} >> ${.TARGET}
 .endfor
 
 CLEANFILES+=	${PAPERBACK_COLOPHON_OUT}
@@ -120,15 +117,12 @@ ${HARDCOVER_OUT}: ${THEMEDIR}/${THEME}-theme.yml ${CUSTOM_PDF_CONVERTER} ${HARDC
 		${PAPERBACK_ADOC_TOTAL}
 
 CLEANFILES+=	${HARDCOVER_ADOC_TOTAL}
-${HARDCOVER_ADOC_TOTAL}: ${HARDCOVER_FRONTMATTER} ${CHAPTERS}
+${HARDCOVER_ADOC_TOTAL}: ${HARDCOVER_FRONTMATTER} ${CHAPTERS} ${UNICODE_TABLE}
 	rm -f ${.TARGET}
 	cp ${HARDCOVER_FRONTMATTER} ${.TARGET}
 .for chapter in ${CHAPTERS}
 	printf '\n\n' >> ${.TARGET}
-	dos2unix < ${chapter} | sed -E \
-		-e 's,[[:space:]]--[[:space:]],\&\#8212;,g' \
-		-e 's,\&iuml;,\&\#239;,g' \
-		-e 's,\&eacute;,\&\#233;,g' >> ${.TARGET}
+	dos2unix < ${chapter} | sed -E -f ${UNICODE_TABLE} >> ${.TARGET}
 .endfor
 
 CLEANFILES+=	${HARDCOVER_COLOPHON_OUT}
@@ -167,15 +161,12 @@ ${EPUB_OUT}: Gemfile.lock ${EPUB_ADOC_TOTAL}
 		${EPUB_ADOC_TOTAL}
 
 CLEANFILES+=	${EPUB_ADOC_TOTAL}
-${EPUB_ADOC_TOTAL}: ${EPUB_FRONTMATTER} ${CHAPTERS}
+${EPUB_ADOC_TOTAL}: ${EPUB_FRONTMATTER} ${CHAPTERS} ${UNICODE_TABLE}
 	rm -f ${.TARGET}
 	cp ${EPUB_FRONTMATTER} ${.TARGET}
 .for chapter in ${CHAPTERS}
 	printf '\n\n' >> ${.TARGET}
-	dos2unix < ${chapter} | sed -E \
-		-e 's,[[:space:]]--[[:space:]],\&\#8212;,g' \
-		-e 's,\&iuml;,\&\#239;,g' \
-		-e 's,\&eacute;,\&\#233;,g' >> ${.TARGET}
+	dos2unix < ${chapter} | sed -E -f ${UNICODE_TABLE} >> ${.TARGET}
 .endfor
 
 CLEANFILES+=	${EPUB_COLOPHON_FILE}
