@@ -207,6 +207,7 @@ ${ACKNOWLEDGMENTS_OUT}: ${THEMEDIR}/${THEME}-acknowledgments-theme.yml ${ACKNOWL
 ########## ########## ##########
 
 Gemfile.lock: Gemfile
+	${BUNDLE} config set --local path ${.CURDIR}/vendor
 	${BUNDLE} install
 
 ########## ########## ##########
