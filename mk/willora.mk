@@ -10,6 +10,7 @@ PAPERBACK_OUT?=		${NAME}-paperback.pdf
 HARDCOVER_OUT?=		${NAME}-hardcover.pdf
 EPUB_OUT?=		${NAME}.epub
 DOCBOOK_OUT?=		${NAME}.xml
+DOCX_OUT?=		${NAME}.docx
 PAPERBACK_ADOC_TOTAL=	${PAPERBACK_OUT}.adoc
 HARDCOVER_ADOC_TOTAL=	${HARDCOVER_OUT}.adoc
 EPUB_ADOC_TOTAL=	${EPUB_OUT}.adoc
@@ -17,6 +18,7 @@ DOCBOOK_ADOC_TOTAL=	${DOCBOOK_OUT}.adoc
 
 BUNDLE?=	bundle
 RUBY?=		ruby
+PANDOC?=	pandoc
 THEME?=		poppy
 THEMEDIR?=	${WILLORABASE}/themes
 FONTDIR?=	${WILLORABASE}/fonts
@@ -57,6 +59,9 @@ epub: ${EPUB_OUT}
 
 .PHONY: docbook
 docbook: ${DOCBOOK_OUT}
+
+.PHONY: docx
+docx: ${DOCX_OUT}
 
 ########## ########## ##########
 
@@ -198,6 +203,20 @@ ${DOCBOOK_ADOC_TOTAL}: ${CHAPTERS} ${UNICODE_TABLE}
 	printf '\n\n' >> ${.TARGET}
 	dos2unix < ${chapter} | sed -E -f ${UNICODE_TABLE} >> ${.TARGET}
 .endfor
+
+########## ########## ##########
+
+# ===== DOCX =====
+
+# Thematic breaks are 'visible' in the Docbook source but they are ignored
+# in the conversion to docx. So we have to make them look the way we want
+# ("# # #") right now.
+CLEANFILES+=	${DOCX_OUT}
+${DOCX_OUT}: ${DOCBOOK_OUT}
+	sed -E -e 's,<\?asciidoc-hr\?>,\&\#35; \&\#35; \&\#35;,' ${DOCBOOK_OUT} | \
+		${PANDOC} --from docbook --to docx \
+		-o ${.TARGET} \
+		-
 
 ########## ########## ##########
 
