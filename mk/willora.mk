@@ -9,9 +9,11 @@ NAME?=			mybook
 PAPERBACK_OUT?=		${NAME}-paperback.pdf
 HARDCOVER_OUT?=		${NAME}-hardcover.pdf
 EPUB_OUT?=		${NAME}.epub
+DOCBOOK_OUT?=		${NAME}.xml
 PAPERBACK_ADOC_TOTAL=	${PAPERBACK_OUT}.adoc
 HARDCOVER_ADOC_TOTAL=	${HARDCOVER_OUT}.adoc
 EPUB_ADOC_TOTAL=	${EPUB_OUT}.adoc
+DOCBOOK_ADOC_TOTAL=	${DOCBOOK_OUT}.adoc
 
 BUNDLE?=	bundle
 RUBY?=		ruby
@@ -52,6 +54,9 @@ hardcover: ${HARDCOVER_OUT}
 
 .PHONY: epub
 epub: ${EPUB_OUT}
+
+.PHONY: docbook
+docbook: ${DOCBOOK_OUT}
 
 ########## ########## ##########
 
@@ -173,6 +178,26 @@ CLEANFILES+=	${EPUB_COLOPHON_FILE}
 ${EPUB_COLOPHON_FILE}: ${COLOPHON_TEMPLATE} ${ERBBER_SCRIPT}
 	${BUNDLE} exec ${RUBY} ${ERBBER_SCRIPT} -DISBN13=${EPUB_ISBN} --input ${COLOPHON_TEMPLATE} > ${.TARGET}
 
+########## ########## ##########
+
+# ===== DOCBOOK =====
+
+CLEANFILES+=	${DOCBOOK_OUT}
+${DOCBOOK_OUT}: Gemfile.lock ${DOCBOOK_ADOC_TOTAL}
+	${BUNDLE} exec asciidoctor \
+		-v \
+		-d book \
+		-b docbook \
+		-o ${.TARGET} \
+		${DOCBOOK_ADOC_TOTAL}
+
+CLEANFILES+=	${DOCBOOK_ADOC_TOTAL}
+${DOCBOOK_ADOC_TOTAL}: ${CHAPTERS} ${UNICODE_TABLE}
+	rm -f ${.TARGET}
+.for chapter in ${CHAPTERS}
+	printf '\n\n' >> ${.TARGET}
+	dos2unix < ${chapter} | sed -E -f ${UNICODE_TABLE} >> ${.TARGET}
+.endfor
 
 ########## ########## ##########
 
