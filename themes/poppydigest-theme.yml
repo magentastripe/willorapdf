@@ -1,0 +1,15 @@
+#
+# WilloraPDF
+# "PoppyDigest" Asciidoctor PDF theme
+#
+# - Lulu "Digest" (paperback) 5.5" x 8.5" trim + 0.125" bleed on all sides
+# - Basically just "Poppy" but in Digest form factor
+---
+
+extends: poppy
+
+page:
+  size: [5.75in, 8.75in]
+  margin: [0.875in, 0.625in, 0.625in, 0.625in]
+  margin-inner: 0.875in
+  margin-outer: 0.625in

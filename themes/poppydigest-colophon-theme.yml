@@ -1,0 +1,9 @@
+---
+
+extends: poppydigest
+
+base:
+  line-height: 1.0
+
+prose:
+  text-indent-inner: 0
