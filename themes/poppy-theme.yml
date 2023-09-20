@@ -68,11 +68,10 @@ heading:
     margin-page-top: 1.0in
     margin-bottom: 0.5in
 
-# "Real" Poppy style
 header:
   font-family: Tuffy
   font-size: 9pt
-  height: 0.75in
+  height: 0.875in
   line-height: 1.0
   verso:
     left:
@@ -84,14 +83,3 @@ header:
       content: 'YOUR BOOK TITLE'
     right:
       content: '{page-number}'
-
-# Plain style
-#header:
-#  height: 0.75in
-#  line-height: 1.0
-#  verso:
-#    center:
-#      content: '{page-number}'
-#  recto:
-#    center:
-#      content: '{page-number}'
