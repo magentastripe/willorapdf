@@ -34,6 +34,7 @@ EPUB_COLOPHON_OUT?=		colophon-epub.pdf
 
 DEDICATION_OUT?=	dedication.pdf
 ACKNOWLEDGMENTS_OUT?=	acknowledgments.pdf
+BIOGRAPHY_OUT?=		biography.pdf
 
 CUSTOM_PDF_CONVERTER=	${WILLORABASE}/lib/${THEME}_pdf_converter.rb
 ERBBER_SCRIPT=		script/erbber.rb
@@ -68,7 +69,7 @@ docx: ${DOCX_OUT}
 # ===== PAPERBACK =====
 
 CLEANFILES+=	${PAPERBACK_OUT}
-${PAPERBACK_OUT}: ${THEMEDIR}/${THEME}-theme.yml ${CUSTOM_PDF_CONVERTER} ${PAPERBACK_ADOC_TOTAL} Gemfile.lock ${PAPERBACK_COLOPHON_OUT} ${DEDICATION_OUT} ${ACKNOWLEDGMENTS_OUT}
+${PAPERBACK_OUT}: ${THEMEDIR}/${THEME}-theme.yml ${CUSTOM_PDF_CONVERTER} ${PAPERBACK_ADOC_TOTAL} Gemfile.lock ${PAPERBACK_COLOPHON_OUT} ${DEDICATION_OUT} ${ACKNOWLEDGMENTS_OUT} ${BIOGRAPHY_OUT}
 	${BUNDLE} exec asciidoctor-pdf \
 		-v \
 		-r ${CUSTOM_PDF_CONVERTER} \
@@ -246,7 +247,22 @@ ${ACKNOWLEDGMENTS_OUT}: ${THEMEDIR}/${THEME}-acknowledgments-theme.yml ${ACKNOWL
 		-a pdf-theme=${THEME}-acknowledgments \
 		-a pdf-themesdir=${THEMEDIR} \
 		-a media=print \
+		-a text-align=justify \
 		${ACKNOWLEDGMENTS_FILE}
+
+CLEANFILES+=	${BIOGRAPHY_OUT}
+${BIOGRAPHY_OUT}: ${THEMEDIR}/${THEME}-acknowledgments-theme.yml ${BIOGRAPHY_FILE} ${CUSTOM_PDF_CONVERTER} Gemfile.lock
+	${BUNDLE} exec asciidoctor-pdf \
+		-v \
+		-r ${CUSTOM_PDF_CONVERTER} \
+		-d book \
+		-o ${.TARGET} \
+		-a pdf-fontsdir=${FONTDIR} \
+		-a pdf-theme=${THEME}-acknowledgments \
+		-a pdf-themesdir=${THEMEDIR} \
+		-a media=print \
+		-a text-align=justify \
+		${BIOGRAPHY_FILE}
 
 ########## ########## ##########
 
