@@ -288,6 +288,10 @@ Gemfile.lock: Gemfile
 
 ########## ########## ##########
 
+.PHONY: wordcount
+wordcount: ${PAPERBACK_ADOC_TOTAL}
+	@wc -w ${PAPERBACK_ADOC_TOTAL}
+
 .PHONY: clean
 clean:
 	rm -f ${CLEANFILES}
