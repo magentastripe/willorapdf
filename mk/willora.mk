@@ -108,7 +108,7 @@ ${PAPERBACK_COLOPHON_OUT}: ${THEMEDIR}/${THEME}-colophon-theme.yml ${PAPERBACK_C
 		-a pdf-fontsdir=${FONTDIR} \
 		-a pdf-theme=${THEME}-colophon \
 		-a pdf-themesdir=${THEMEDIR} \
-		-a media=print \
+		-a media=${MEDIA} \
 		-a text-align=justify \
 		${PAPERBACK_COLOPHON_FILE}
 
@@ -156,7 +156,7 @@ ${HARDCOVER_COLOPHON_OUT}: ${THEMEDIR}/${THEME}-colophon-theme.yml ${HARDCOVER_C
 		-a pdf-fontsdir=${FONTDIR} \
 		-a pdf-theme=${THEME}-colophon \
 		-a pdf-themesdir=${THEMEDIR} \
-		-a media=print \
+		-a media=${MEDIA} \
 		-a text-align=justify \
 		${HARDCOVER_COLOPHON_FILE}
 
@@ -249,7 +249,7 @@ ${DEDICATION_OUT}: ${THEMEDIR}/${THEME}-dedication-theme.yml ${DEDICATION_FILE} 
 		-a pdf-fontsdir=${FONTDIR} \
 		-a pdf-theme=${THEME}-dedication \
 		-a pdf-themesdir=${THEMEDIR} \
-		-a media=print \
+		-a media=${MEDIA} \
 		${DEDICATION_FILE}
 
 CLEANFILES+=	${ACKNOWLEDGMENTS_OUT}
@@ -262,7 +262,7 @@ ${ACKNOWLEDGMENTS_OUT}: ${THEMEDIR}/${THEME}-acknowledgments-theme.yml ${ACKNOWL
 		-a pdf-fontsdir=${FONTDIR} \
 		-a pdf-theme=${THEME}-acknowledgments \
 		-a pdf-themesdir=${THEMEDIR} \
-		-a media=print \
+		-a media=${MEDIA} \
 		-a text-align=justify \
 		${ACKNOWLEDGMENTS_FILE}
 
@@ -276,7 +276,7 @@ ${BIOGRAPHY_OUT}: ${THEMEDIR}/${THEME}-acknowledgments-theme.yml ${BIOGRAPHY_FIL
 		-a pdf-fontsdir=${FONTDIR} \
 		-a pdf-theme=${THEME}-acknowledgments \
 		-a pdf-themesdir=${THEMEDIR} \
-		-a media=print \
+		-a media=${MEDIA} \
 		-a text-align=justify \
 		${BIOGRAPHY_FILE}
 
