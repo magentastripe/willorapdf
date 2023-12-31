@@ -46,6 +46,7 @@ BIOGRAPHY_OUT?=		biography.pdf
 CUSTOM_PDF_CONVERTER=	${WILLORABASE}/lib/${THEME}_pdf_converter.rb
 ERBBER_SCRIPT=		script/erbber.rb
 UNICODE_TABLE=		script/unicodify.sed
+DOCX_FIXUP=		script/docx_fixup.sed
 
 VOLUMEKIND_PAPERBACK=	PAPERBACK
 VOLUMEKIND_HARDCOVER=	HARDCOVER
@@ -264,8 +265,8 @@ ${DOCBOOK_ADOC_TOTAL}: ${CHAPTERS} ${UNICODE_TABLE}
 # in the conversion to docx. So we have to make them look the way we want
 # ("# # #") right now.
 CLEANFILES+=	${DOCX_OUT}
-${DOCX_OUT}: ${DOCBOOK_OUT}
-	sed -E -e 's,<\?asciidoc-hr\?>,\&\#35; \&\#35; \&\#35;,' ${DOCBOOK_OUT} | \
+${DOCX_OUT}: ${DOCBOOK_OUT} ${DOCX_FIXUP}
+	sed -E -f ${DOCX_FIXUP} ${DOCBOOK_OUT} | \
 		${PANDOC} --from docbook --to docx \
 		-o ${.TARGET} \
 		-
