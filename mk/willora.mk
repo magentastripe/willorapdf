@@ -11,6 +11,7 @@ HARDCOVER_OUT?=		${NAME}-hardcover.pdf
 EPUB_OUT?=		${NAME}.epub
 DOCBOOK_OUT?=		${NAME}.xml
 DOCX_OUT?=		${NAME}.docx
+ODT_OUT?=		${NAME}.odt
 PAPERBACK_ADOC_TOTAL=	${PAPERBACK_OUT}.adoc
 HARDCOVER_ADOC_TOTAL=	${HARDCOVER_OUT}.adoc
 EPUB_ADOC_TOTAL=	${EPUB_OUT}.adoc
@@ -84,6 +85,9 @@ docbook: ${DOCBOOK_OUT}
 
 .PHONY: docx
 docx: ${DOCX_OUT}
+
+.PHONY: odt
+odt: ${ODT_OUT}
 
 ########## ########## ##########
 
@@ -268,6 +272,19 @@ CLEANFILES+=	${DOCX_OUT}
 ${DOCX_OUT}: ${DOCBOOK_OUT} ${DOCX_FIXUP}
 	sed -E -f ${DOCX_FIXUP} ${DOCBOOK_OUT} | \
 		${PANDOC} --from docbook --to docx \
+		--reference-doc lib/WilloraPDF_Manuscript_Reference.docx \
+		-o ${.TARGET} \
+		-
+
+########## ########## ##########
+
+# ===== ODT =====
+
+CLEANFILES+=	${ODT_OUT}
+${ODT_OUT}: ${DOCBOOK_OUT} ${DOCX_FIXUP} lib/WilloraPDF_Manuscript_Reference.odt
+	sed -E -f ${DOCX_FIXUP} ${DOCBOOK_OUT} | \
+		${PANDOC} --from docbook --to odt \
+		--reference-doc lib/WilloraPDF_Manuscript_Reference.odt \
 		-o ${.TARGET} \
 		-
 
