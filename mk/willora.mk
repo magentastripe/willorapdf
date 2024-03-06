@@ -205,7 +205,7 @@ ${HARDCOVER_FRONTMATTER}: ${FRONTMATTER_TEMPLATE}
 # ===== EPUB =====
 
 CLEANFILES+=	${EPUB_OUT}
-${EPUB_OUT}: Gemfile.lock ${EPUB_ADOC_TOTAL}
+${EPUB_OUT}: Gemfile.lock ${EPUB_ADOC_TOTAL} ${EPUB_COVER_FILE}
 	${BUNDLE} exec asciidoctor-epub3 \
 		-v \
 		-d book \
