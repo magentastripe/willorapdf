@@ -40,6 +40,13 @@ PAPERBACK_COLOPHON_OUT?=	colophon-paperback.pdf
 HARDCOVER_COLOPHON_OUT?=	colophon-hardcover.pdf
 EPUB_COLOPHON_OUT?=		colophon-epub.pdf
 
+EPUB_STYLESHEET=	${THEMEDIR}/epub3.scss
+# XXX FIXME vv this shows up as "ISBN" on kobo
+#EPUB_UUID=		4af808df-05d7-442f-a04d-5e23f394b4af 
+# XXX FIXME vv this should be the real publication date
+EPUB_REVDATE=		2024-01-01 
+EPUB_BLURBFILE=		epub-assets/epub_blurb.html
+
 DEDICATION_OUT?=	dedication.pdf
 ACKNOWLEDGMENTS_OUT?=	acknowledgments.pdf
 BIOGRAPHY_OUT?=		biography.pdf
@@ -204,18 +211,35 @@ ${HARDCOVER_FRONTMATTER}: ${FRONTMATTER_TEMPLATE}
 
 # ===== EPUB =====
 
+EPUB_DESCR!=	cat ${EPUB_BLURBFILE}
+
+# Includes a hack to add in my own fonts
 CLEANFILES+=	${EPUB_OUT}
-${EPUB_OUT}: Gemfile.lock ${EPUB_ADOC_TOTAL} ${EPUB_COVER_FILE}
+${EPUB_OUT}: Gemfile.lock ${EPUB_ADOC_TOTAL} ${EPUB_COVER_FILE} ${EPUB_STYLESHEET} ${EPUB_BLURBFILE}
 	${BUNDLE} exec asciidoctor-epub3 \
 		-v \
 		-d book \
 		-o ${.TARGET} \
+		-a uuid="${EPUB_ISBN}" \
+		-a revdate="${EPUB_REVDATE}" \
 		-a producer="${PUBLISHER}" \
+		-a description="${EPUB_DESCR}" \
 		-a front-cover-image=${EPUB_COVER_FILE} \
 		-a ebook-format=epub3 \
+		-a epub3-stylesdir=${THEMEDIR} \
 		-a media=${MEDIA} \
 		-a text-align=justify \
 		${EPUB_ADOC_TOTAL}
+	rm -rf ./epub-cleanup ./cleaned.epub;		\
+		mkdir -p ./epub-cleanup;		\
+		sync .;					\
+		cd ./epub-cleanup;			\
+		unzip ../${.TARGET};			\
+		rsync -avr ${FONTDIR}/ ./EPUB/fonts/;	\
+		zip ../cleaned.epub -r .;		\
+		cd ..;					\
+		rm -rf ./epub-cleanup;			\
+		mv ./cleaned.epub ${.TARGET};
 
 CLEANFILES+=	${EPUB_ADOC_TOTAL}
 ${EPUB_ADOC_TOTAL}: ${EPUB_FRONTMATTER} ${CHAPTERS} ${UNICODE_TABLE}

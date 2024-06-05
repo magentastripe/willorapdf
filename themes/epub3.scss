@@ -1,0 +1,52 @@
+/*
+ * Magenta Stripe Media - EPUB3 Stylesheet
+ * Charlotte Koch <charlotte@magentastripe.com>
+ */
+
+/* ***** EB GARAMOND FONT ***** */
+
+@font-face {
+  font-family: "EB Garamond";
+  font-style: normal;
+  font-weight: normal;
+  src: url(../fonts/EBGaramond08-Regular.ttf);
+}
+
+@font-face {
+  font-family: "EB Garamond";
+  font-style: italic;
+  font-weight: normal;
+  src: url(../fonts/EBGaramond08-Italic.ttf);
+}
+
+
+/* ***** NAUTICAL FONT ***** */
+
+@font-face {
+  font-family: "Nautical";
+  font-style: normal;
+  font-weight: normal;
+  src: url(../fonts/Nautical.ttf);
+}
+
+
+/* ***** BODY ***** */
+
+body {
+  font-family: "EB Garamond", serif;
+}
+
+/*
+ * Default stylesheet contains 1em margin on the top of every paragraph;
+ * this should remove it.
+ */
+body p {
+  margin: 0em;
+  text-indent: 2em;
+  line-height: 2.0;
+}
+
+hr.thematicbreak {
+  /* XXX try to insert the appropriate dingbat here */
+  text-align: center;
+}
