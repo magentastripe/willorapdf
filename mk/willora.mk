@@ -65,6 +65,9 @@ ERBBER_SCRIPT=		script/erbber.rb
 UNICODE_TABLE=		script/unicodify.sed
 DOCX_FIXUP=		script/docx_fixup.sed
 
+DOCX_MANUSCRIPT_REF=	lib/WilloraPDF_Manuscript_Reference.docx
+ODT_MANUSCRIPT_REF=	lib/WilloraPDF_Manuscript_Reference.odt
+
 ALL_SECTIONS_COMMON=	${DEDICATION_OUT}
 ALL_SECTIONS_COMMON+=	${ACKNOWLEDGMENTS_OUT}
 ALL_SECTIONS_COMMON+=	${BIOGRAPHY_OUT}
@@ -259,6 +262,11 @@ ${EPUB_COLOPHON_FILE}: ${COLOPHON_TEMPLATE} ${ERBBER_SCRIPT}
 
 # ===== DOCBOOK =====
 
+# Willora's DocBook output is intended for making editable files compatible
+# with Microsoft Word -- it's supposed to be part of the copyediting
+# workflow, not final typesetting and interior design. That's why the
+# frontmatter and backmatter are "missing."
+
 CLEANFILES+=	${DOCBOOK_OUT}
 ${DOCBOOK_OUT}: Gemfile.lock ${DOCBOOK_ADOC_TOTAL}
 	${BUNDLE} exec asciidoctor \
@@ -283,11 +291,12 @@ ${DOCBOOK_ADOC_TOTAL}: ${CHAPTERS} ${UNICODE_TABLE}
 # Thematic breaks are 'visible' in the Docbook source but they are ignored
 # in the conversion to docx. So we have to make them look the way we want
 # ("# # #") right now.
+
 CLEANFILES+=	${DOCX_OUT}
-${DOCX_OUT}: ${DOCBOOK_OUT} ${DOCX_FIXUP}
+${DOCX_OUT}: ${DOCBOOK_OUT} ${DOCX_FIXUP} ${DOCX_MANUSCRIPT_REF}
 	sed -E -f ${DOCX_FIXUP} ${DOCBOOK_OUT} | \
 		${PANDOC} --from docbook --to docx \
-		--reference-doc lib/WilloraPDF_Manuscript_Reference.docx \
+		--reference-doc ${DOCX_MANUSCRIPT_REF} \
 		-o ${.TARGET} \
 		-
 
@@ -296,10 +305,10 @@ ${DOCX_OUT}: ${DOCBOOK_OUT} ${DOCX_FIXUP}
 # ===== ODT =====
 
 CLEANFILES+=	${ODT_OUT}
-${ODT_OUT}: ${DOCBOOK_OUT} ${DOCX_FIXUP} lib/WilloraPDF_Manuscript_Reference.odt
+${ODT_OUT}: ${DOCBOOK_OUT} ${DOCX_FIXUP} ${ODT_MANUSCRIPT_REF}
 	sed -E -f ${DOCX_FIXUP} ${DOCBOOK_OUT} | \
 		${PANDOC} --from docbook --to odt \
-		--reference-doc lib/WilloraPDF_Manuscript_Reference.odt \
+		--reference-doc ${ODT_MANUSCRIPT_REF} \
 		-o ${.TARGET} \
 		-
 
