@@ -12,6 +12,14 @@ EPUB_OUT?=		${NAME}.epub
 DOCBOOK_OUT?=		${NAME}.xml
 DOCX_OUT?=		${NAME}.docx
 ODT_OUT?=		${NAME}.odt
+BASE_ERB=		${NAME}-base.adoc.erb
+
+ALL_OUT= \
+	${PAPERBACK_OUT} \
+	${HARDCOVER_OUT} \
+	${EPUB_OUT}
+
+# One of these for each edition
 PAPERBACK_ADOC_TOTAL=	${PAPERBACK_OUT}.adoc
 HARDCOVER_ADOC_TOTAL=	${HARDCOVER_OUT}.adoc
 EPUB_ADOC_TOTAL=	${EPUB_OUT}.adoc
@@ -33,19 +41,20 @@ PAPERBACK_CATNO?=	MSM-000001
 HARDCOVER_CATNO?=	MSM-000002
 EPUB_CATNO?=		MSM-000003
 
-PAPERBACK_FRONTMATTER=		frontmatter-paperback.adoc
-HARDCOVER_FRONTMATTER=		frontmatter-hardcover.adoc
-EPUB_FRONTMATTER=		frontmatter-epub.adoc
+FRONTMATTER_TEMPLATE?=		adoc/frontmatter-template.adoc.erb
+
 PAPERBACK_COLOPHON_OUT?=	colophon-paperback.pdf
 HARDCOVER_COLOPHON_OUT?=	colophon-hardcover.pdf
 EPUB_COLOPHON_OUT?=		colophon-epub.pdf
 
 EPUB_STYLESHEET=	${THEMEDIR}/epub3.scss
-# XXX FIXME vv this shows up as "ISBN" on kobo
-#EPUB_UUID=		4af808df-05d7-442f-a04d-5e23f394b4af 
-# XXX FIXME vv this should be the real publication date
-EPUB_REVDATE=		2024-01-01 
 EPUB_BLURBFILE=		epub-assets/epub_blurb.html
+EPUB_COVER_FILE=	epub-assets/cover.jpg
+EPUB_REVDATE?=		1970-01-01
+
+DEDICATION_FILE=	adoc/dedication.adoc
+ACKNOWLEDGMENTS_FILE=	adoc/acknowledgments.adoc
+BIOGRAPHY_FILE=		adoc/biography.adoc
 
 DEDICATION_OUT?=	dedication.pdf
 ACKNOWLEDGMENTS_OUT?=	acknowledgments.pdf
@@ -55,10 +64,6 @@ CUSTOM_PDF_CONVERTER=	${WILLORABASE}/lib/${THEME}_pdf_converter.rb
 ERBBER_SCRIPT=		script/erbber.rb
 UNICODE_TABLE=		script/unicodify.sed
 DOCX_FIXUP=		script/docx_fixup.sed
-
-VOLUMEKIND_PAPERBACK=	PAPERBACK
-VOLUMEKIND_HARDCOVER=	HARDCOVER
-VOLUMEKIND_EPUB=	EPUB
 
 ALL_SECTIONS_COMMON=	${DEDICATION_OUT}
 ALL_SECTIONS_COMMON+=	${ACKNOWLEDGMENTS_OUT}
@@ -71,15 +76,21 @@ PREREQS_COMMON+=	Gemfile.lock
 
 ########## ########## ##########
 
+.PHONY: default
+default: paperback
+
 .PHONY: all
-all: ${PAPERBACK_OUT} ${HARDCOVER_OUT} ${EPUB_OUT}
+all: ${ALL_OUT}
+
+.PHONY: base
+base: ${BASE_ERB}
+
+.PHONY: paperback
+paperback: ${PAPERBACK_OUT}
 
 # Legacy synonym
 .PHONY: pdf
 pdf: paperback
-
-.PHONY: paperback
-paperback: ${PAPERBACK_OUT}
 
 .PHONY: hardcover
 hardcover: ${HARDCOVER_OUT}
@@ -115,13 +126,12 @@ ${PAPERBACK_OUT}: ${PREREQS_COMMON} ${ALL_SECTIONS_COMMON} ${PAPERBACK_ADOC_TOTA
 		${PAPERBACK_ADOC_TOTAL}
 
 CLEANFILES+=	${PAPERBACK_ADOC_TOTAL}
-${PAPERBACK_ADOC_TOTAL}: ${PAPERBACK_FRONTMATTER} ${CHAPTERS} ${UNICODE_TABLE}
-	rm -f ${.TARGET}
-	cp ${PAPERBACK_FRONTMATTER} ${.TARGET}
-.for chapter in ${CHAPTERS}
-	printf '\n\n' >> ${.TARGET}
-	dos2unix < ${chapter} | sed -E -f ${UNICODE_TABLE} >> ${.TARGET}
-.endfor
+${PAPERBACK_ADOC_TOTAL}: ${BASE_ERB} ${ERBBER_SCRIPT}
+	${BUNDLE} exec ${RUBY} ${ERBBER_SCRIPT} \
+		-DISBN13=${PAPERBACK_ISBN} \
+		-DCATNO=${PAPERBACK_CATNO} \
+		-DVOLUMEKIND=PAPERBACK \
+		--input ${BASE_ERB} > ${.TARGET}
 
 CLEANFILES+=	${PAPERBACK_COLOPHON_OUT}
 ${PAPERBACK_COLOPHON_OUT}: ${THEMEDIR}/${THEME}-colophon-theme.yml ${PAPERBACK_COLOPHON_FILE} ${CUSTOM_PDF_CONVERTER} Gemfile.lock
@@ -142,15 +152,8 @@ ${PAPERBACK_COLOPHON_FILE}: ${COLOPHON_TEMPLATE} ${ERBBER_SCRIPT}
 	${BUNDLE} exec ${RUBY} ${ERBBER_SCRIPT} \
 		-DISBN13=${PAPERBACK_ISBN} \
 		-DCATNO=${PAPERBACK_CATNO} \
-		-DVOLUMEKIND=${VOLUMEKIND_PAPERBACK} \
+		-DVOLUMEKIND=PAPERBACK \
 		--input ${COLOPHON_TEMPLATE} > ${.TARGET}
-
-
-CLEANFILES+=	${PAPERBACK_FRONTMATTER}
-${PAPERBACK_FRONTMATTER}: ${FRONTMATTER_TEMPLATE}
-	${BUNDLE} exec ${RUBY} ${ERBBER_SCRIPT} \
-		-DVOLUMEKIND=${VOLUMEKIND_PAPERBACK} \
-		--input ${FRONTMATTER_TEMPLATE} > ${.TARGET}
 
 ########## ########## ##########
 
@@ -168,16 +171,15 @@ ${HARDCOVER_OUT}: ${PREREQS_COMMON} ${ALL_SECTIONS_COMMON} ${HARDCOVER_ADOC_TOTA
 		-a pdf-themesdir=${THEMEDIR} \
 		-a media=${MEDIA} \
 		-a text-align=justify \
-		${PAPERBACK_ADOC_TOTAL}
+		${HARDCOVER_ADOC_TOTAL}
 
 CLEANFILES+=	${HARDCOVER_ADOC_TOTAL}
-${HARDCOVER_ADOC_TOTAL}: ${HARDCOVER_FRONTMATTER} ${CHAPTERS} ${UNICODE_TABLE}
-	rm -f ${.TARGET}
-	cp ${HARDCOVER_FRONTMATTER} ${.TARGET}
-.for chapter in ${CHAPTERS}
-	printf '\n\n' >> ${.TARGET}
-	dos2unix < ${chapter} | sed -E -f ${UNICODE_TABLE} >> ${.TARGET}
-.endfor
+${HARDCOVER_ADOC_TOTAL}: ${BASE_ERB} ${ERBBER_SCRIPT}
+	${BUNDLE} exec ${RUBY} ${ERBBER_SCRIPT} \
+		-DISBN13=${HARDCOVER_ISBN} \
+		-DCATNO=${HARDCOVER_CATNO} \
+		-DVOLUMEKIND=HARDCOVER \
+		--input ${BASE_ERB} > ${.TARGET}
 
 CLEANFILES+=	${HARDCOVER_COLOPHON_OUT}
 ${HARDCOVER_COLOPHON_OUT}: ${THEMEDIR}/${THEME}-colophon-theme.yml ${HARDCOVER_COLOPHON_FILE} ${CUSTOM_PDF_CONVERTER} Gemfile.lock
@@ -198,14 +200,8 @@ ${HARDCOVER_COLOPHON_FILE}: ${COLOPHON_TEMPLATE} ${ERBBER_SCRIPT}
 	${BUNDLE} exec ${RUBY} ${ERBBER_SCRIPT} \
 		-DISBN13=${HARDCOVER_ISBN} \
 		-DCATNO=${HARDCOVER_CATNO} \
-		-DVOLUMEKIND=${VOLUMEKIND_HARDCOVER} \
+		-DVOLUMEKIND=HARDCOVER \
 		--input ${COLOPHON_TEMPLATE} > ${.TARGET}
-
-CLEANFILES+=	${HARDCOVER_FRONTMATTER}
-${HARDCOVER_FRONTMATTER}: ${FRONTMATTER_TEMPLATE}
-	${BUNDLE} exec ${RUBY} ${ERBBER_SCRIPT} \
-		-DVOLUMEKIND=${VOLUMEKIND_HARDCOVER} \
-		--input ${FRONTMATTER_TEMPLATE} > ${.TARGET}
 
 ########## ########## ##########
 
@@ -214,6 +210,8 @@ ${HARDCOVER_FRONTMATTER}: ${FRONTMATTER_TEMPLATE}
 EPUB_DESCR!=	cat ${EPUB_BLURBFILE}
 
 # Includes a hack to add in my own fonts
+#
+# XXX Try to include EPUB_DESCR somewhere other than ARGV
 CLEANFILES+=	${EPUB_OUT}
 ${EPUB_OUT}: Gemfile.lock ${EPUB_ADOC_TOTAL} ${EPUB_COVER_FILE} ${EPUB_STYLESHEET} ${EPUB_BLURBFILE}
 	${BUNDLE} exec asciidoctor-epub3 \
@@ -225,6 +223,7 @@ ${EPUB_OUT}: Gemfile.lock ${EPUB_ADOC_TOTAL} ${EPUB_COVER_FILE} ${EPUB_STYLESHEE
 		-a producer="${PUBLISHER}" \
 		-a description="${EPUB_DESCR}" \
 		-a front-cover-image=${EPUB_COVER_FILE} \
+		-a series-name="${EPUB_SERIESNAME}" \
 		-a ebook-format=epub3 \
 		-a epub3-stylesdir=${THEMEDIR} \
 		-a media=${MEDIA} \
@@ -232,9 +231,8 @@ ${EPUB_OUT}: Gemfile.lock ${EPUB_ADOC_TOTAL} ${EPUB_COVER_FILE} ${EPUB_STYLESHEE
 		${EPUB_ADOC_TOTAL}
 	rm -rf ./epub-cleanup ./cleaned.epub;		\
 		mkdir -p ./epub-cleanup;		\
-		sync .;					\
 		cd ./epub-cleanup;			\
-		unzip ../${.TARGET};			\
+		unzip -q ../${.TARGET};			\
 		rsync -avr ${FONTDIR}/ ./EPUB/fonts/;	\
 		zip ../cleaned.epub -r .;		\
 		cd ..;					\
@@ -242,27 +240,20 @@ ${EPUB_OUT}: Gemfile.lock ${EPUB_ADOC_TOTAL} ${EPUB_COVER_FILE} ${EPUB_STYLESHEE
 		mv ./cleaned.epub ${.TARGET};
 
 CLEANFILES+=	${EPUB_ADOC_TOTAL}
-${EPUB_ADOC_TOTAL}: ${EPUB_FRONTMATTER} ${CHAPTERS} ${UNICODE_TABLE}
-	rm -f ${.TARGET}
-	cp ${EPUB_FRONTMATTER} ${.TARGET}
-.for chapter in ${CHAPTERS}
-	printf '\n\n' >> ${.TARGET}
-	dos2unix < ${chapter} | sed -E -f ${UNICODE_TABLE} >> ${.TARGET}
-.endfor
+${EPUB_ADOC_TOTAL}: ${BASE_ERB} ${ERBBER_SCRIPT}
+	${BUNDLE} exec ${RUBY} ${ERBBER_SCRIPT} \
+		-DISBN13=${EPUB_ISBN} \
+		-DCATNO=${EPUB_CATNO} \
+		-DVOLUMEKIND=EPUB \
+		--input ${BASE_ERB} > ${.TARGET}
 
 CLEANFILES+=	${EPUB_COLOPHON_FILE}
 ${EPUB_COLOPHON_FILE}: ${COLOPHON_TEMPLATE} ${ERBBER_SCRIPT}
 	${BUNDLE} exec ${RUBY} ${ERBBER_SCRIPT} \
 		-DISBN13=${EPUB_ISBN} \
 		-DCATNO=${EPUB_CATNO} \
-		-DVOLUMEKIND=${VOLUMEKIND_EPUB} \
+		-DVOLUMEKIND=EPUB \
 		--input ${COLOPHON_TEMPLATE} > ${.TARGET}
-
-CLEANFILES+=	${EPUB_FRONTMATTER}
-${EPUB_FRONTMATTER}: ${FRONTMATTER_TEMPLATE}
-	${BUNDLE} exec ${RUBY} ${ERBBER_SCRIPT} \
-		-DVOLUMEKIND=${VOLUMEKIND_EPUB} \
-		--input ${FRONTMATTER_TEMPLATE} > ${.TARGET}
 
 ########## ########## ##########
 
@@ -316,6 +307,18 @@ ${ODT_OUT}: ${DOCBOOK_OUT} ${DOCX_FIXUP} lib/WilloraPDF_Manuscript_Reference.odt
 
 # ===== COMMON =====
 
+CLEANFILES+=	${BASE_ERB}
+${BASE_ERB}: ${FRONTMATTER_TEMPLATE} ${CHAPTERS} ${UNICODE_TABLE}
+	rm -f ${.TARGET}
+	echo "// vim: filetype=asciidoc" >> ${.TARGET}
+	cat ${FRONTMATTER_TEMPLATE} >> ${.TARGET}
+.for chapter in ${CHAPTERS}
+	echo >> ${.TARGET}; echo >> ${.TARGET}
+	dos2unix < ${chapter} | sed -E -f ${UNICODE_TABLE} >> ${.TARGET}
+.endfor
+
+########## ########## ##########
+
 CLEANFILES+=	${DEDICATION_OUT}
 ${DEDICATION_OUT}: ${THEMEDIR}/${THEME}-dedication-theme.yml ${DEDICATION_FILE} ${CUSTOM_PDF_CONVERTER} Gemfile.lock
 	${BUNDLE} exec asciidoctor-pdf \
@@ -366,8 +369,8 @@ Gemfile.lock: Gemfile
 ########## ########## ##########
 
 .PHONY: wordcount
-wordcount: ${PAPERBACK_ADOC_TOTAL}
-	@wc -w ${PAPERBACK_ADOC_TOTAL}
+wordcount: ${BASE_ERB}
+	@wc -w ${BASE_ERB}
 
 .PHONY: clean
 clean:
