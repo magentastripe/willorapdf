@@ -1,0 +1,44 @@
+= <%= @opts[:title] %>
+<%= @opts[:author] %>
+:nofooter:
+:reproducible:
+:pagenums:
+
+<%# =================================================================== %>
+
+[colophon%notitle%nonfacing]
+= Colophon
+
+(C) <%= Time.now.year.to_s %> <%= @opts[:publisher] %>
+
+All rights reserved.
+
+This is a work of fiction. Names, characters, places and incidents are
+the product of the author's imagination or are used fictitiously. Any
+resemblance to actual events, locales or persons, living or dead, is
+purely coincidental.
+
+Published by <%= @opts[:publisher] %>
+
+Printed by XXX THE PRINTER.
+
+Cover design by XXX THE ARTIST.
+
+Typeset in 12-point EB Garamond.
+
+First Edition
+
+// ISBN-13 <%# var["ISBN"] %>
+
+// Publisher Catalog Number <%# var["CATNO"] %>
+
+Learn more at the author's website: [.underline]#\https://charlotte-koch.com/#
+
+Learn more about the publisher: [.underline]#\https://magentastripe.com/#
+
+<%# =================================================================== %>
+
+[dedication%notitle]
+= Dedication
+
+image::dedication.pdf[page=3]

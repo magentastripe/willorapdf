@@ -1,0 +1,33 @@
+NAME=		<%= @opts[:nickname] %>
+PUBLISHER=	<%= @opts[:publisher] %>
+THEME=		this
+
+BUNDLE?=	bundle32
+RUBY?=		ruby32
+
+PAPERBACK_ISBN=		111-1-11111111-1-1
+HARDCOVER_ISBN=		222-2-22222222-2-2
+EPUB_ISBN=		333-3-33333333-3-3
+
+PAPERBACK_CATNO=	MSM-00004
+HARDCOVER_CATNO=	MSM-00005
+EPUB_CATNO=		MSM-00006
+
+EPUB_REVDATE=		1970-01-01
+EPUB_SERIESNAME=	<% @opts[:seriesname] %>
+
+COLOPHON_TEMPLATE=		adoc/colophon-template.adoc.erb
+PAPERBACK_COLOPHON_FILE=	colophon-paperback.adoc
+HARDCOVER_COLOPHON_FILE=	colophon-hardcover.adoc
+EPUB_COLOPHON_FILE=		colophon-epub.adoc
+
+########## ########## ##########
+
+CHAPTERS+=	adoc/part01.adoc
+CHAPTERS+=	adoc/CHAP01.adoc
+CHAPTERS+=	adoc/backmatter.adoc
+
+########## ########## ##########
+
+.-include "mk/local.mk"
+.include "mk/willora.mk"
