@@ -64,6 +64,11 @@ class Willora
       return 1
     end
 
+    if File.exists?(@opts[:destination])
+      @errormsg = "Destination directory already exists: #{@opts[:destination].inspect}"
+      return 1
+    end
+
     # Fill in some gaps before we continue.
     if !@opts[:nickname]
       @errormsg = "New project requires a nickname"
