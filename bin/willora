@@ -64,11 +64,6 @@ class Willora
       return 1
     end
 
-    if File.exists?(@opts[:destination])
-      @errormsg = "Destination directory already exists: #{@opts[:destination].inspect}"
-      return 1
-    end
-
     # Fill in some gaps before we continue.
     if !@opts[:nickname]
       @errormsg = "New project requires a nickname"
@@ -80,12 +75,18 @@ class Willora
       return 1
     end
 
+    realdestbase = File.join(@opts[:destination], @opts[:nickname])
+
+    if File.exists?(realdestbase)
+      @errormsg = "Directory already exists: #{realdestbase.inspect}"
+      return 1
+    end
+
     @opts[:title] = DEFAULT_TITLE if !@opts[:title]
     @opts[:author] = DEFAULT_AUTHOR if !@opts[:author]
     @opts[:publisher] = DEFAULT_PUBLISHER if !@opts[:publisher]
 
     # Create the new project directory and copy the files over.
-    realdestbase = File.join(@opts[:destination], @opts[:nickname])
     FileUtils.mkdir_p(realdestbase, :verbose => true)
 
     alldirs << File.join(_willorabase, "Gemfile")
