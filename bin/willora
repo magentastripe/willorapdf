@@ -13,6 +13,7 @@ class Willora
   VERSION = "0.0.0a"
   DEFAULT_TITLE = "My Cool Book"
   DEFAULT_AUTHOR = "Allen Smithee"
+  DEFAULT_PUBLISHER = "Made-Up Press"
 
   attr_reader :errormsg
 
@@ -58,6 +59,11 @@ class Willora
       end
     end
 
+    if !@opts[:destination]
+      @errormsg = "Destination directory is required"
+      return 1
+    end
+
     # Fill in some gaps before we continue.
     if !@opts[:nickname]
       @errormsg = "New project requires a nickname"
@@ -71,6 +77,7 @@ class Willora
 
     @opts[:title] = DEFAULT_TITLE if !@opts[:title]
     @opts[:author] = DEFAULT_AUTHOR if !@opts[:author]
+    @opts[:publisher] = DEFAULT_PUBLISHER if !@opts[:publisher]
 
     # Create the new project directory and copy the files over.
     realdestbase = File.join(@opts[:destination], @opts[:nickname])
@@ -124,10 +131,17 @@ if $0 == __FILE__
 
   opts = {}
 
+  command = ARGV.shift
+
+  if ["help", "new"].include?(command)
+    opts[:command] = command.intern
+  else
+    $stderr.puts("FATAL: unknown command #{command.inspect}")
+    exit 1
+  end
+
   # Parse command-line parameters.
   parser = OptionParser.new do |op|
-    op.on("-h", "--help") { opts[:command] = :help }
-    op.on("-n", "--new") { opts[:command] = :new }
     op.on("--title TITLE") { |title| opts[:title] = title }
     op.on("--nickname NAME") { |nick| opts[:nickname] = nick }
     op.on("--author AUTHOR") { |author| opts[:author] = author }
@@ -136,7 +150,7 @@ if $0 == __FILE__
   end
   parser.parse!(ARGV)
 
-  if opts[:command] == :help
+  if !command || command == :help
     puts(parser.to_s)
     exit 0
   end
