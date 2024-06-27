@@ -88,6 +88,8 @@ class Willora
     realdestbase = File.join(@opts[:destination], @opts[:nickname])
     FileUtils.mkdir_p(realdestbase, :verbose => true)
 
+    alldirs << File.join(_willorabase, "Gemfile")
+
     alldirs.each do |dir|
       basename = File.basename(dir)
       realdest = File.join(realdestbase, basename)
