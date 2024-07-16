@@ -42,6 +42,11 @@ HARDCOVER_CATNO?=	MSM-000002
 EPUB_CATNO?=		MSM-000003
 
 FRONTMATTER_TEMPLATE?=		adoc/frontmatter-template.adoc.erb
+COLOPHON_TEMPLATE=		adoc/colophon-template.adoc.erb
+
+PAPERBACK_COLOPHON_FILE?=	colophon-paperback.adoc
+HARDCOVER_COLOPHON_FILE?=	colophon-hardcover.adoc
+EPUB_COLOPHON_FILE?=		colophon-epub.adoc
 
 PAPERBACK_COLOPHON_OUT?=	colophon-paperback.pdf
 HARDCOVER_COLOPHON_OUT?=	colophon-hardcover.pdf
