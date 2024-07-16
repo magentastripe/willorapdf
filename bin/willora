@@ -4,8 +4,6 @@
 # Charlotte Koch <charlotte@magentastripe.com>
 #
 
-require 'erb'
-require 'fileutils'
 require 'optparse'
 
 $LOAD_PATH.unshift File.join(__dir__, "..", "lib")

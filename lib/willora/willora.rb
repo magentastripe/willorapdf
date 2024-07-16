@@ -1,3 +1,6 @@
+require 'erb'
+require 'fileutils'
+
 class Willora
   VERSION = "0.0.0a"
   DEFAULT_TITLE = "My Cool Book"
