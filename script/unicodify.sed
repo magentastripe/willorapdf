@@ -8,9 +8,10 @@ s,'`,\&\#8216;,g
 s,`',\&\#8217;,g
 
 # Diacritics.
-s,\&iuml;,\&\#239;,g
+s,\&ccedil;,\&\#231;,g
 s,\&egrave;,\&\#232;,g
 s,\&eacute;,\&\#233;,g
+s,\&iuml;,\&\#239;,g
 
 # Remove Asciidoc comments now, for the sake of getting more accurate
 # wordcounts.
