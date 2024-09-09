@@ -26,7 +26,11 @@ running-content:
 
 page:
   layout: portrait
-  margin: [0.75in, 0.5in, 0.5in, 0.5in]
+  margin-top: 0.75in
+  margin-right: 0.5in
+  margin-bottom: 0.5in
+  margin-left: 0.5in
+
   margin-inner: 0.5in
   size: [5.25in, 8in]
   numbering:
@@ -54,6 +58,11 @@ prose:
 verse:
   font-family: EBGaramond
   border-left-width: 0
+  line-height: 1.00
+  padding-top: 12pt
+  padding-right: 0pt
+  padding-bottom: 0pt
+  padding-left: 24pt
 
 heading:
   h1:
