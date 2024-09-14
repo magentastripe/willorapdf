@@ -1,5 +1,6 @@
-# Remove spaces on either end of an em-dash.
+# Remove spaces on either end of an em-dash or ellipsis.
 s,[[:space:]]--[[:space:]],\&\#8212;,g
+s,[[:space:]]\.\.\.[[:space:]],\&\#8230;,g
 
 # WilloraPDF extension: explicit "unmatched" double-quote shortcuts.
 #
@@ -10,7 +11,9 @@ s,[[:space:]]--[[:space:]],\&\#8212;,g
 s,\&_OPENDOUBLEQUOTE;,\&\#8220;,g
 s,\&_CLOSEDOUBLEQUOTE;,\&\#8221;,g
 
-# Curly single quotes.
+# Explicitly handle curly double quotes before curly single quotes.
+s,"`,\&\#8220;,g
+s,`",\&\#8221;,g
 s,'`,\&\#8216;,g
 s,`',\&\#8217;,g
 
