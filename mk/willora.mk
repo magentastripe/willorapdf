@@ -68,6 +68,7 @@ BIOGRAPHY_OUT?=		biography.pdf
 CUSTOM_PDF_CONVERTER=	${WILLORABASE}/lib/${THEME}_pdf_converter.rb
 ERBBER_SCRIPT=		script/erbber.rb
 UNICODE_TABLE=		script/unicodify.sed
+UNICODE_TABLE_2=	script/unicodify2.sed
 DOCX_FIXUP=		script/docx_fixup.sed
 
 DOCX_MANUSCRIPT_REF=	lib/WilloraPDF_Manuscript_Reference.docx
@@ -322,13 +323,13 @@ ${ODT_OUT}: ${DOCBOOK_OUT} ${DOCX_FIXUP} ${ODT_MANUSCRIPT_REF}
 # ===== COMMON =====
 
 CLEANFILES+=	${BASE_ERB}
-${BASE_ERB}: ${FRONTMATTER_TEMPLATE} ${CHAPTERS} ${UNICODE_TABLE}
+${BASE_ERB}: ${FRONTMATTER_TEMPLATE} ${CHAPTERS} ${UNICODE_TABLE} ${UNICODE_TABLE_2}
 	rm -f ${.TARGET}
 	echo "// vim: filetype=asciidoc" >> ${.TARGET}
 	cat ${FRONTMATTER_TEMPLATE} >> ${.TARGET}
 .for chapter in ${CHAPTERS}
 	echo >> ${.TARGET}; echo >> ${.TARGET}
-	dos2unix < ${chapter} | sed -E -f ${UNICODE_TABLE} >> ${.TARGET}
+	dos2unix < ${chapter} | sed -E -f ${UNICODE_TABLE} | sed -E -f ${UNICODE_TABLE_2}>> ${.TARGET}
 .endfor
 
 ########## ########## ##########
