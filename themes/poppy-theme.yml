@@ -16,6 +16,8 @@ font:
       normal: EBGaramond08-Regular.ttf
       italic: EBGaramond08-Italic.ttf
       bold: EBGaramond12-Regular.ttf
+    EBGaramondSmallCaps:
+      normal: EBGaramondSC08-Regular.ttf
     Tuffy:
       normal: Tuffy-Regular.ttf
       italic: Tuffy-Italic.ttf
@@ -92,3 +94,10 @@ header:
       content: 'YOUR BOOK TITLE'
     right:
       content: '{page-number}'
+
+role:
+  smallcaps:
+    font-family: EBGaramondSmallCaps
+  XXX:
+    font-style: italic
+    font-color: "#FF0000"
