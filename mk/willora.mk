@@ -396,3 +396,7 @@ wordcount: ${BASE_ERB}
 .PHONY: clean
 clean:
 	rm -f ${CLEANFILES}
+
+.PHONY: __WIPEOUT__
+__WIPEOUT__: clean
+	rm -rf Gemfile.lock ${.CURDIR}/vendor ${.CURDIR}/.bundle
