@@ -83,6 +83,8 @@ PREREQS_COMMON=		${CUSTOM_PDF_CONVERTER}
 PREREQS_COMMON+=	${THEMEDIR}/${THEME}-theme.yml
 PREREQS_COMMON+=	Gemfile.lock
 
+EXTRA_ARGS?=		# defined
+
 ########## ########## ##########
 
 .PHONY: default
@@ -132,6 +134,7 @@ ${PAPERBACK_OUT}: ${PREREQS_COMMON} ${ALL_SECTIONS_COMMON} ${PAPERBACK_ADOC_TOTA
 		-a pdf-themesdir=${THEMEDIR} \
 		-a media=${MEDIA} \
 		-a text-align=justify \
+		${EXTRA_ARGS} \
 		${PAPERBACK_ADOC_TOTAL}
 
 CLEANFILES+=	${PAPERBACK_ADOC_TOTAL}
@@ -154,6 +157,7 @@ ${PAPERBACK_COLOPHON_OUT}: ${THEMEDIR}/${THEME}-colophon-theme.yml ${PAPERBACK_C
 		-a pdf-themesdir=${THEMEDIR} \
 		-a media=${MEDIA} \
 		-a text-align=justify \
+		${EXTRA_ARGS} \
 		${PAPERBACK_COLOPHON_FILE}
 
 CLEANFILES+=	${PAPERBACK_COLOPHON_FILE}
@@ -180,6 +184,7 @@ ${HARDCOVER_OUT}: ${PREREQS_COMMON} ${ALL_SECTIONS_COMMON} ${HARDCOVER_ADOC_TOTA
 		-a pdf-themesdir=${THEMEDIR} \
 		-a media=${MEDIA} \
 		-a text-align=justify \
+		${EXTRA_ARGS} \
 		${HARDCOVER_ADOC_TOTAL}
 
 CLEANFILES+=	${HARDCOVER_ADOC_TOTAL}
@@ -202,6 +207,7 @@ ${HARDCOVER_COLOPHON_OUT}: ${THEMEDIR}/${THEME}-colophon-theme.yml ${HARDCOVER_C
 		-a pdf-themesdir=${THEMEDIR} \
 		-a media=${MEDIA} \
 		-a text-align=justify \
+		${EXTRA_ARGS} \
 		${HARDCOVER_COLOPHON_FILE}
 
 CLEANFILES+=	${HARDCOVER_COLOPHON_FILE}
@@ -345,6 +351,7 @@ ${DEDICATION_OUT}: ${THEMEDIR}/${THEME}-dedication-theme.yml ${DEDICATION_FILE} 
 		-a pdf-theme=${THEME}-dedication \
 		-a pdf-themesdir=${THEMEDIR} \
 		-a media=${MEDIA} \
+		${EXTRA_ARGS} \
 		${DEDICATION_FILE}
 
 CLEANFILES+=	${ACKNOWLEDGMENTS_OUT}
@@ -359,6 +366,7 @@ ${ACKNOWLEDGMENTS_OUT}: ${THEMEDIR}/${THEME}-acknowledgments-theme.yml ${ACKNOWL
 		-a pdf-themesdir=${THEMEDIR} \
 		-a media=${MEDIA} \
 		-a text-align=justify \
+		${EXTRA_ARGS} \
 		${ACKNOWLEDGMENTS_FILE}
 
 CLEANFILES+=	${BIOGRAPHY_OUT}
@@ -373,6 +381,7 @@ ${BIOGRAPHY_OUT}: ${THEMEDIR}/${THEME}-acknowledgments-theme.yml ${BIOGRAPHY_FIL
 		-a pdf-themesdir=${THEMEDIR} \
 		-a media=${MEDIA} \
 		-a text-align=justify \
+		${EXTRA_ARGS} \
 		${BIOGRAPHY_FILE}
 
 ########## ########## ##########
