@@ -70,6 +70,7 @@ ERBBER_SCRIPT=		script/erbber.rb
 UNICODE_TABLE=		script/unicodify.sed
 UNICODE_TABLE_2=	script/unicodify2.sed
 DOCX_FIXUP=		script/docx_fixup.sed
+EPUB_FONT_STUFFER=	script/epub_font_stuffer.sh
 
 DOCX_MANUSCRIPT_REF=	lib/WilloraPDF_Manuscript_Reference.docx
 ODT_MANUSCRIPT_REF=	lib/WilloraPDF_Manuscript_Reference.odt
@@ -228,11 +229,11 @@ EPUB_DESCR!=	cat ${EPUB_BLURBFILE}
 #
 # XXX Try to include EPUB_DESCR somewhere other than ARGV
 CLEANFILES+=	${EPUB_OUT}
-${EPUB_OUT}: Gemfile.lock ${EPUB_ADOC_TOTAL} ${EPUB_COVER_FILE} ${EPUB_STYLESHEET} ${EPUB_BLURBFILE}
+${EPUB_OUT}: Gemfile.lock ${EPUB_ADOC_TOTAL} ${EPUB_COVER_FILE} ${EPUB_STYLESHEET} ${EPUB_BLURBFILE} ${EPUB_FONT_STUFFER}
 	${BUNDLE} exec asciidoctor-epub3 \
 		-v \
 		-d book \
-		-o ${.TARGET} \
+		-o prestuffed.epub \
 		-a uuid="${EPUB_ISBN}" \
 		-a revdate="${EPUB_REVDATE}" \
 		-a producer="${PUBLISHER}" \
@@ -244,15 +245,11 @@ ${EPUB_OUT}: Gemfile.lock ${EPUB_ADOC_TOTAL} ${EPUB_COVER_FILE} ${EPUB_STYLESHEE
 		-a media=${MEDIA} \
 		-a text-align=justify \
 		${EPUB_ADOC_TOTAL}
-	rm -rf ./epub-cleanup ./cleaned.epub;		\
-		mkdir -p ./epub-cleanup;		\
-		cd ./epub-cleanup;			\
-		unzip -q ../${.TARGET};			\
-		rsync -avr ${FONTDIR}/ ./EPUB/fonts/;	\
-		zip ../cleaned.epub -r .;		\
-		cd ..;					\
-		rm -rf ./epub-cleanup;			\
-		mv ./cleaned.epub ${.TARGET};
+	bash ${EPUB_FONT_STUFFER}	\
+		--fontdir ${FONTDIR}	\
+		--input prestuffed.epub	\
+		--output ${.TARGET}
+	rm -f prestuffed.epub
 
 CLEANFILES+=	${EPUB_ADOC_TOTAL}
 ${EPUB_ADOC_TOTAL}: ${BASE_ERB} ${ERBBER_SCRIPT}
