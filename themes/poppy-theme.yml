@@ -13,11 +13,11 @@ font:
   catalog:
     merge: false
     EBGaramond:
-      normal: EBGaramond08-Regular.ttf
-      italic: EBGaramond08-Italic.ttf
+      normal: EBGaramond12-Regular.ttf
+      italic: EBGaramond12-Italic.ttf
       bold: EBGaramond12-Regular.ttf
     EBGaramondSmallCaps:
-      normal: EBGaramondSC08-Regular.ttf
+      normal: EBGaramondSC12-Regular.ttf
     Tuffy:
       normal: Tuffy-Regular.ttf
       italic: Tuffy-Italic.ttf
