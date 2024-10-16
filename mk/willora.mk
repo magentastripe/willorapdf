@@ -265,6 +265,7 @@ ${EPUB_OUT}: Gemfile.lock ${EPUB_ADOC_TOTAL} ${EPUB_COVER_FILE} ${EPUB_STYLESHEE
 		-a epub3-stylesdir=${THEMEDIR} \
 		-a media=${MEDIA} \
 		-a text-align=justify \
+		${EXTRA_ARGS} \
 		${EPUB_ADOC_TOTAL}
 	bash ${EPUB_FONT_STUFFER}	\
 		--fontdir ${FONTDIR}	\
