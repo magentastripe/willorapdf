@@ -70,7 +70,7 @@ class Willora
 
     realdestbase = File.join(@opts[:destination], @opts[:nickname])
 
-    if File.exists?(realdestbase)
+    if File.exist?(realdestbase)
       @errormsg = "Directory already exists: #{realdestbase.inspect}"
       return 1
     end
