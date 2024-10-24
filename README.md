@@ -6,9 +6,9 @@
 professional publishing, brought to you by [Magenta Stripe Media][1].
 
 It is a collection of themes, tools and other goodies for
-[Asciidoctor-PDF][2]. **WilloraPDF is designed to empower self-publishers**
-and lower the barrier to entry for authors who want their work
-professionally printed.
+[Asciidoctor-PDF][2] to make a full-featured prepress toolchain.
+**WilloraPDF is designed to empower self-publishers** and lower the barrier
+to entry for authors who want their work professionally printed.
 
 It is currently a **work in progress,** being developed alongside my debut
 novel. Version 1.0 of WilloraPDF will be released when the first paperback
