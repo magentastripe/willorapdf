@@ -95,8 +95,12 @@ class Willora
     templates = {
       "Makefile.erb" => "",
 
+      "acknowledgments.adoc.erb" => "adoc",
+      "backmatter.adoc.erb" => "adoc",
+      "biography.adoc.erb" => "adoc",
       "CHAP01.adoc.erb" => "adoc",
-      "frontmatter.adoc.erb" => "adoc",
+      "dedication.adoc.erb" => "adoc",
+      "frontmatter-template.adoc.erb" => "adoc",
       "part01.adoc.erb" => "adoc",
     }
 
@@ -107,7 +111,14 @@ class Willora
       end
       templatefile = File.join(_templatedir, template)
       result = ERB.new(File.read(templatefile)).result(binding)
-      newfile = File.join(destdir, File.basename(template, ".erb"))
+
+      # This file gets installed *with* the .erb extension.
+      if template == "frontmatter-template.adoc.erb"
+        newfile = File.join(destdir, template)
+      else
+        newfile = File.join(destdir, File.basename(template, ".erb"))
+      end
+
       puts "GENERATE #{newfile}"
       File.open(newfile, "w") do |fp|
         fp.puts(result)

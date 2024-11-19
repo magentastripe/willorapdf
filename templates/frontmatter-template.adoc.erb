@@ -1,0 +1,29 @@
+= <%= @opts[:title] %>
+<%= @opts[:author] %>
+:nofooter:
+:reproducible:
+:pagenums:
+
+// ===================================================================
+
+[colophon%notitle%nonfacing]
+= Colophon
+
+<%% if var["VOLUMEKIND"] == "PAPERBACK" %>
+image::colophon-paperback.pdf[page=2]
+<%% end %>
+
+<%% if var["VOLUMEKIND"] == "HARDCOVER" %>
+image::colophon-hardcover.pdf[page=2]
+<%% end %>
+
+<%% if var["VOLUMEKIND"] == "EPUB" %>
+<%%= File.read("colophoncontent-epub.adoc") %>
+<%% end %>
+
+// ===================================================================
+
+[dedication%notitle]
+= Dedication
+
+image::dedication.pdf[page=3]
