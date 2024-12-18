@@ -354,7 +354,7 @@ ${BASE_ERB}: ${FRONTMATTER_TEMPLATE} ${CHAPTERS} ${UNICODE_TABLE} ${UNICODE_TABL
 	cat ${FRONTMATTER_TEMPLATE} >> ${.TARGET}
 .for chapter in ${CHAPTERS}
 	echo >> ${.TARGET}; echo >> ${.TARGET}
-	dos2unix < ${chapter} | sed -E -f ${UNICODE_TABLE} | sed -E -f ${UNICODE_TABLE_2}>> ${.TARGET}
+	dos2unix < ${chapter} | sed -E -f ${UNICODE_TABLE} | sed -E -f ${UNICODE_TABLE_2} >> ${.TARGET}
 .endfor
 
 ########## ########## ##########
