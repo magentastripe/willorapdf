@@ -1,8 +1,5 @@
 # Render a thematic break as 3 hash symbols.
-#
-# XXX need to replace the surrounding <simpara> with whatever it takes to
-# get a horizontal-rule to show up in LibreOffice
-s,<\?asciidoc-hr\?>,\&\#35; \&\#35; \&\#35;,
+s,<\?asciidoc-hr\?>,\&\#35; \&\#35; \&\#35;, 
 
 # Asciidoctor puts a zero-width space after ellipses for some reason -- get
 # rid of it.
