@@ -43,30 +43,37 @@ PAPERBACK_CATNO?=	MSM-000001
 HARDCOVER_CATNO?=	MSM-000002
 EPUB_CATNO?=		MSM-000003
 
+########## ########## ##########
+
 FRONTMATTER_TEMPLATE?=		adoc/frontmatter-template.adoc.erb
 COLOPHON_TEMPLATE=		adoc/colophon-template.adoc.erb
 COLOPHONCONTENT_TEMPLATE=	adoc/colophon-content.adoc.erb
+DEDICATION_TEMPLATE=		adoc/dedication-template.adoc.erb
+DEDICATIONCONTENT_TEMPLATE=	adoc/dedication-content.adoc.erb
 
 PAPERBACK_COLOPHONCONTENT_FILE=		colophoncontent-paperback.adoc
 HARDCOVER_COLOPHONCONTENT_FILE=		colophoncontent-hardcover.adoc
 EPUB_COLOPHONCONTENT_FILE=		colophoncontent-epub.adoc
+DEDICATION_CONTENT_FILE=		dedication-content.adoc
 
 PAPERBACK_COLOPHON_FILE?=	colophon-paperback.adoc
 HARDCOVER_COLOPHON_FILE?=	colophon-hardcover.adoc
-
 PAPERBACK_COLOPHON_OUT?=	colophon-paperback.pdf
 HARDCOVER_COLOPHON_OUT?=	colophon-hardcover.pdf
+
+PAPERBACK_DEDICATION_FILE?=	dedication-paperback.adoc
+HARDCOVER_DEDICATION_FILE?=	dedication-hardcover.adoc
+PAPERBACK_DEDICATION_OUT?=	dedication-paperback.pdf
+HARDCOVER_DEDICATION_OUT?=	dedication-hardcover.pdf
 
 EPUB_STYLESHEET=	${THEMEDIR}/epub3.scss
 EPUB_BLURBFILE=		epub-assets/epub_blurb.html
 EPUB_COVER_FILE=	epub-assets/cover.jpg
 EPUB_REVDATE?=		1970-01-01
 
-DEDICATION_FILE=	adoc/dedication.adoc
 ACKNOWLEDGMENTS_FILE=	adoc/acknowledgments.adoc
 BIOGRAPHY_FILE=		adoc/biography.adoc
 
-DEDICATION_OUT?=	dedication.pdf
 ACKNOWLEDGMENTS_OUT?=	acknowledgments.pdf
 BIOGRAPHY_OUT?=		biography.pdf
 
@@ -129,7 +136,7 @@ odt: ${ODT_OUT}
 # ===== PAPERBACK =====
 
 CLEANFILES+=	${PAPERBACK_OUT}
-${PAPERBACK_OUT}: ${PREREQS_COMMON} ${ALL_SECTIONS_COMMON} ${PAPERBACK_ADOC_TOTAL} ${PAPERBACK_COLOPHON_OUT}
+${PAPERBACK_OUT}: ${PREREQS_COMMON} ${ALL_SECTIONS_COMMON} ${PAPERBACK_ADOC_TOTAL} ${PAPERBACK_COLOPHON_OUT} ${PAPERBACK_DEDICATION_OUT}
 	${BUNDLE} exec asciidoctor-pdf \
 		-v \
 		-r ${CUSTOM_PDF_CONVERTER} \
@@ -150,6 +157,8 @@ ${PAPERBACK_ADOC_TOTAL}: ${BASE_ERB} ${ERBBER_SCRIPT}
 		-DCATNO=${PAPERBACK_CATNO} \
 		-DVOLUMEKIND=PAPERBACK \
 		--input ${BASE_ERB} > ${.TARGET}
+
+# -- Paperback colophon ---
 
 CLEANFILES+=	${PAPERBACK_COLOPHON_OUT}
 ${PAPERBACK_COLOPHON_OUT}: ${THEMEDIR}/${THEME}-colophon-theme.yml ${PAPERBACK_COLOPHON_FILE} ${CUSTOM_PDF_CONVERTER} Gemfile.lock
@@ -182,12 +191,34 @@ ${PAPERBACK_COLOPHONCONTENT_FILE}: ${COLOPHONCONTENT_TEMPLATE} ${ERBBER_SCRIPT}
 		-DVOLUMEKIND=PAPERBACK \
 		--input ${COLOPHONCONTENT_TEMPLATE} > ${.TARGET}
 
+# -- Paperback dedication ---
+
+CLEANFILES+=	${PAPERBACK_DEDICATION_OUT}
+${PAPERBACK_DEDICATION_OUT}: ${THEMEDIR}/${THEME}-dedication-theme.yml ${PAPERBACK_DEDICATION_FILE} ${CUSTOM_PDF_CONVERTER} Gemfile.lock
+	${BUNDLE} exec asciidoctor-pdf \
+		-v \
+		-r ${CUSTOM_PDF_CONVERTER} \
+		-d book \
+		-o ${.TARGET} \
+		-a pdf-fontsdir=${FONTDIR} \
+		-a pdf-theme=${THEME}-dedication \
+		-a pdf-themesdir=${THEMEDIR} \
+		-a media=${MEDIA} \
+		${EXTRA_ARGS} \
+		${PAPERBACK_DEDICATION_FILE}
+
+CLEANFILES+=	${PAPERBACK_DEDICATION_FILE}
+${PAPERBACK_DEDICATION_FILE}: ${DEDICATION_TEMPLATE} ${DEDICATION_CONTENT_FILE}
+	${BUNDLE} exec ${RUBY} ${ERBBER_SCRIPT} \
+		-DVOLUMEKIND=PAPERBACK \
+		--input ${DEDICATION_TEMPLATE} > ${.TARGET}
+
 ########## ########## ##########
 
 # ===== HARDCOVER =====
 
 CLEANFILES+=	${HARDCOVER_OUT}
-${HARDCOVER_OUT}: ${PREREQS_COMMON} ${ALL_SECTIONS_COMMON} ${HARDCOVER_ADOC_TOTAL} ${HARDCOVER_COLOPHON_OUT}
+${HARDCOVER_OUT}: ${PREREQS_COMMON} ${ALL_SECTIONS_COMMON} ${HARDCOVER_ADOC_TOTAL} ${HARDCOVER_COLOPHON_OUT} ${HARDCOVER_DEDICATION_OUT}
 	${BUNDLE} exec asciidoctor-pdf \
 		-v \
 		-r ${CUSTOM_PDF_CONVERTER} \
@@ -208,6 +239,8 @@ ${HARDCOVER_ADOC_TOTAL}: ${BASE_ERB} ${ERBBER_SCRIPT}
 		-DCATNO=${HARDCOVER_CATNO} \
 		-DVOLUMEKIND=HARDCOVER \
 		--input ${BASE_ERB} > ${.TARGET}
+
+# -- Hardcover colophon ---
 
 CLEANFILES+=	${HARDCOVER_COLOPHON_OUT}
 ${HARDCOVER_COLOPHON_OUT}: ${THEMEDIR}/${THEME}-colophon-theme.yml ${HARDCOVER_COLOPHON_FILE} ${CUSTOM_PDF_CONVERTER} Gemfile.lock
@@ -239,6 +272,28 @@ ${HARDCOVER_COLOPHONCONTENT_FILE}: ${COLOPHONCONTENT_TEMPLATE} ${ERBBER_SCRIPT}
 		-DCATNO=${HARDCOVER_CATNO} \
 		-DVOLUMEKIND=HARDCOVER \
 		--input ${COLOPHONCONTENT_TEMPLATE} > ${.TARGET}
+
+# -- Hardcover dedication ---
+
+CLEANFILES+=	${HARDCOVER_DEDICATION_OUT}
+${HARDCOVER_DEDICATION_OUT}: ${THEMEDIR}/${THEME}-dedication-theme.yml ${HARDCOVER_DEDICATION_FILE} ${CUSTOM_PDF_CONVERTER} Gemfile.lock
+	${BUNDLE} exec asciidoctor-pdf \
+		-v \
+		-r ${CUSTOM_PDF_CONVERTER} \
+		-d book \
+		-o ${.TARGET} \
+		-a pdf-fontsdir=${FONTDIR} \
+		-a pdf-theme=${THEME}-dedication \
+		-a pdf-themesdir=${THEMEDIR} \
+		-a media=${MEDIA} \
+		${EXTRA_ARGS} \
+		${HARDCOVER_DEDICATION_FILE}
+
+CLEANFILES+=	${HARDCOVER_DEDICATION_FILE}
+${HARDCOVER_DEDICATION_FILE}: ${DEDICATION_TEMPLATE} ${DEDICATION_CONTENT_FILE}
+	${BUNDLE} exec ${RUBY} ${ERBBER_SCRIPT} \
+		-DVOLUMEKIND=HARDCOVER \
+		--input ${DEDICATION_TEMPLATE} > ${.TARGET}
 
 ########## ########## ##########
 
@@ -359,19 +414,12 @@ ${BASE_ERB}: ${FRONTMATTER_TEMPLATE} ${CHAPTERS} ${UNICODE_TABLE} ${UNICODE_TABL
 
 ########## ########## ##########
 
-CLEANFILES+=	${DEDICATION_OUT}
-${DEDICATION_OUT}: ${THEMEDIR}/${THEME}-dedication-theme.yml ${DEDICATION_FILE} ${CUSTOM_PDF_CONVERTER} Gemfile.lock
-	${BUNDLE} exec asciidoctor-pdf \
-		-v \
-		-r ${CUSTOM_PDF_CONVERTER} \
-		-d book \
-		-o ${.TARGET} \
-		-a pdf-fontsdir=${FONTDIR} \
-		-a pdf-theme=${THEME}-dedication \
-		-a pdf-themesdir=${THEMEDIR} \
-		-a media=${MEDIA} \
-		${EXTRA_ARGS} \
-		${DEDICATION_FILE}
+# XXX Is it actually safe to assume that the dedication content is the same for
+# all editions?
+CLEANFILES+=	${DEDICATION_CONTENT_FILE}
+${DEDICATION_CONTENT_FILE}: ${DEDICATIONCONTENT_TEMPLATE} ${ERBBER_SCRIPT}
+	${BUNDLE} exec ${RUBY} ${ERBBER_SCRIPT} \
+		--input ${DEDICATIONCONTENT_TEMPLATE} > ${.TARGET}
 
 CLEANFILES+=	${ACKNOWLEDGMENTS_OUT}
 ${ACKNOWLEDGMENTS_OUT}: ${THEMEDIR}/${THEME}-acknowledgments-theme.yml ${ACKNOWLEDGMENTS_FILE} ${CUSTOM_PDF_CONVERTER} Gemfile.lock
