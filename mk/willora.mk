@@ -304,7 +304,7 @@ EPUB_DESCR!=	cat ${EPUB_BLURBFILE}
 # Includes a hack to add in my own fonts
 #
 # XXX Try to include EPUB_DESCR somewhere other than ARGV
-CLEANFILES+=	${EPUB_OUT}
+CLEANFILES+=	${EPUB_OUT} package.opf
 ${EPUB_OUT}: Gemfile.lock ${EPUB_ADOC_TOTAL} ${EPUB_COVER_FILE} ${EPUB_STYLESHEET} ${EPUB_BLURBFILE} ${EPUB_FONT_STUFFER}
 	${BUNDLE} exec asciidoctor-epub3 \
 		-v \
